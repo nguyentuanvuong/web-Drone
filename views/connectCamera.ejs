@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stream Camera</title>
+    <%- include('./layout/head'); %>
+  </head>
+  <%- include('./layout/header'); %>
+  <%- include('./layout/nav'); %>
+  <body>
+    <div>
+      <form id="config" action="javascript:alert;">
+        <select id="videoSource" ></select>
+        <select id="fps">
+          <option value="1">1 fps</option>
+          <option value="10">10 fps</option>
+          <option value="30">30 fps</option>
+          <option value="60">60 fps</option>
+        </select>
+        <select id="resolution">
+          <option value="360">360x</option>
+          <option value="640">640x</option>
+          <option value="720">720x</option>
+          <option value="1280">1280x720</option>
+        </select>
+        <input type="submit" value="Connect">
+      </form>
+      <video id="video" width="80%" controls autoplay ></video>
+      <canvas id="preview" style="display: none;" ></canvas>
+
+      
+   </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+      <script src="js/connectcamera.js"></script>
+  </body>
+  <footer>
+    <%- include('./layout/footer');%>
+  </footer>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stream Camera</title>
+    <%- include('./layout/head'); %>
+  </head>
+  <%- include('./layout/header'); %>
+  <%- include('./layout/nav'); %>
+  <body>
+    <div id="camera">
+      <!-- <canvas id="preview"></canvas> -->
+        <img id="image" width="100%" src="img/noCamera1.jpg">
+
+      <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+      <script>
+        // var canvas = document.getElementById("preview");
+        // var context = canvas.getContext("2d");
+        // canvas.width = 640;
+        // canvas.height = canvas.width*9/16;
+        // context.width = canvas.width;
+        // context.height = canvas.height;
+        var socket = io();
+        socket.on('stream cam',(img)=>{
+          var image = document.getElementById('image');
+
+          image.src = `data:image/png;base64,${img}`; 
+        });
+      </script>
+      
+    </div>    
+  </body>
+  <footer>
+    <%- include('./layout/footer');%>
+  </footer>
+</html>
