@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
+  <%- include('./bootstrap'); %>
   <head>
     <title>Stream Camera</title>
-    <%- include('./layout/head'); %>
+    <%- include('./layout/header'); %>
   </head>
-  <%- include('./layout/header'); %>
-  <%- include('./layout/nav'); %>
   <body>
     <div>
       <form id="config" action="javascript:alert;">
@@ -33,6 +32,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       <script type="text/javascript" src="/socket.io/socket.io.js"></script>
       <script src="js/connectcamera.js"></script>
+      <Script>
+        var socket = io();
+        socket.on('message',(msg)=>{
+          console.log(msg);
+        });
+      </Script>
   </body>
   <footer>
     <%- include('./layout/footer');%>
