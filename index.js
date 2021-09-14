@@ -35,7 +35,10 @@ io.on('connection', (socket) => {
     });
     socket.on("stream cam", img => {
       socket.broadcast.emit("stream cam", img);
-    });    
+    });
+    socket.on('StreamID', msg=>{
+      io.emit(msg.socketID,msg);
+    }); 
     socket.on('disconnect', () => {
       console.log(socket.id,' disconnected');
     });
