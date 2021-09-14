@@ -26,9 +26,8 @@
         </select>
         <input type="submit" value="Connect">
       </form>
-      <video id="video" width="50%" controls autoplay></video>
+      <video id="video" width="80%" controls autoplay></video>
       <canvas id="preview" style="display: none;" ></canvas>
-      <img id="detect" src="" alt="">
 
       
    </div>
@@ -36,13 +35,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       <script type="text/javascript" src="/socket.io/socket.io.js"></script>
       <script src="js/connectcamera.js"></script>
-      <Script>
+      <!-- <Script>
         // var socket = io();
-        socket.on('stream', (jpeg_as_text) => {
+        socket.on('results', (jpeg_as_text) => {
           const item = document.getElementById('detect');
           item.src = `data:image/png;base64,${jpeg_as_text}`;
         });
-      </Script>
+      </Script> -->
   </body>
   <footer>
     <%- include('./layout/footer');%>
