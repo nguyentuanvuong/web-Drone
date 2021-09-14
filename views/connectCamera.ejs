@@ -26,22 +26,22 @@
         </select>
         <input type="submit" value="Connect">
       </form>
-      <video id="video" width="80%" controls autoplay></video>
+      <video id="video" width="99%" controls autoplay></video>
       <canvas id="preview" style="display: none;" ></canvas>
-
-      
+   </div>
+   <div>
+     <span> <p id="results"></p></span>
    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       <script type="text/javascript" src="/socket.io/socket.io.js"></script>
       <script src="js/connectcamera.js"></script>
-      <!-- <Script>
-        // var socket = io();
-        socket.on('results', (jpeg_as_text) => {
-          const item = document.getElementById('detect');
-          item.src = `data:image/png;base64,${jpeg_as_text}`;
+      <script>
+        socket = io();
+      socket.on('log', (msg) => {
+        console.log(msg)
         });
-      </Script> -->
+      </script>
   </body>
   <footer>
     <%- include('./layout/footer');%>
