@@ -27,8 +27,11 @@ io.on('connection', (socket) => {
     io.emit("message", msg);
     // socket.broadcast.emit("message", msg);
     });
-    socket.on("stream", img => {
-      io.emit("stream", img);
+    socket.on("stream", msg => {
+      io.emit("stream", msg);
+    });
+    socket.on('log',msg=>{
+      io.emit('log',msg);
     });
     socket.on("stream cam", img => {
       socket.broadcast.emit("stream cam", img);
