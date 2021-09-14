@@ -13,9 +13,17 @@
       <img id="0">
       <img id="1">
       <img id="2">
-      <script type="text/javascript" src="/js/viewCamera.js"></script>
+      <!-- <script type="text/javascript" src="/js/viewCamera.js"></script> -->
     </div>
-    <span id="messages"></span>
+    <span id="log"></span>
+    <script>
+      socket = io();
+      socket.on('log', (msg) => {
+        console.log(msg)
+          // const item = document.getElementById('log');
+          // item.textContent = msg;
+        });
+    </script>
     
   </body>
   <footer>
