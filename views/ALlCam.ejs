@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Stream Camera</title>
-    <%- include('./bootstrap'); %>
+    <%- include('./layout/head'); %>
     <%- include('./layout/header'); %>
   </head>
   <body>
@@ -10,19 +10,15 @@
       <script type="text/javascript" src="/socket.io/socket.io.js"></script>
       <!-- <script type="text/javascript" src="js/listCamera.js"></script> -->
       <img id="obs">
-      <img id="0">
-      <img id="1">
-      <img id="2">
       <script type="text/javascript" src="/js/viewCamera.js"></script>
     </div>
     <span id="log"></span>
     <script>
-      socket = io();
-      socket.on('log', (msg) => {
-        console.log(msg)
-          const item = document.getElementById('log');
-          item.textContent = msg;
-        });
+      // socket.on('log', (msg) => {
+      //   console.log(msg)
+      //     const item = document.getElementById('log');
+      //     item.textContent = msg;
+      //   });
     </script>
     
   </body>

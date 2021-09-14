@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-  <%- include('./bootstrap'); %>
   <head>
     <title>Stream Camera</title>
+    <%- include('./layout/head'); %>
     <%- include('./layout/header'); %>
   </head>
   <body>
-    <div style="margin-top: 60px;"></div>
+    <div style="margin-top: 60px;">
       <form id="config" action="javascript:alert;">
         <select id="videoSource"></select>
         <select id="fps">
@@ -25,12 +25,12 @@
           <option value="1280">1280p</option>
         </select>
         <input type="submit" value="Connect">
-      </form>
-      <video id="video" width="48%" controls autoplay></video>
-      <canvas id="preview" style="display: none;" ></canvas>
-   
-     <img id="image" src="" alt="" width="48%">
-     <span> <p id="results"></p></span>
+      </form>      
+   </div>
+   <div>
+    <video id="video" width="48%" controls autoplay></video>
+    <canvas id="preview" style="display: none;" ></canvas>
+    <img id="image" src="" alt="" width="48%">
    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
