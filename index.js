@@ -1,9 +1,15 @@
 const express = require('express');
 const app = express();
+const https = require('https');
 const http = require('http');
 
+const options = {
+  key: "",
+  cert: ""
+};
+
 const serverHTTP = http.createServer(app);
-// const serverHTTPS = https.createServer(app);
+const serverHTTPS = https.createServer(options,app);
 
 const { Server } = require("socket.io");
 const io = new Server(serverHTTP);
@@ -20,6 +26,8 @@ var apiRouter = require('./routes/api');
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
+
+
 
 io.on('connection', (socket) => {
   console.log(socket.id,' connect');
@@ -48,6 +56,6 @@ io.on('connection', (socket) => {
   console.log('listening on *:',portHTTP);
 });
 
-// serverHTTPS.listen(portHTTPS,()=>{
-//   console.log('listening on *:', portHTTPS);
-// });
+serverHTTPS.listen(portHTTPS,()=>{
+  console.log('listening on *:', portHTTPS);
+});
