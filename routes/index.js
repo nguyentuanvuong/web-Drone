@@ -16,6 +16,9 @@ router.get('/ALlCam',(req,res)=>{
 router.get('/Mission',(req,res)=>{
     res.render('Mission');
 });
+router.get('/lora-map',(req, res)=>{
+  res.render('mapLora');
+});
 router.get('/bank',(req,res)=>{
     res.render('bank');
   });
