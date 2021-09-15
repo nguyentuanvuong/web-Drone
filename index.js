@@ -2,19 +2,21 @@ const express = require('express');
 const app = express();
 const https = require('https');
 const http = require('http');
+const fs = require('fs');
 
 const options = {
-  key: "",
-  cert: ""
+  key:  fs.readFileSync('ssl/key.pem'),
+  cert:  fs.readFileSync('ssl/cert.pem')
 };
 
 const serverHTTP = http.createServer(app);
 const serverHTTPS = https.createServer(options,app);
 
 const { Server } = require("socket.io");
-const io = new Server(serverHTTP);
+const io = new Server(serverHTTPS);
+
 const portHTTP = 3000;
-const portHTTPS = 8443;
+const portHTTPS = 3443;
 
 app.set("view engine","ejs");
 app.set("views", "./views");
@@ -53,9 +55,9 @@ io.on('connection', (socket) => {
   });
 
   serverHTTP.listen(portHTTP, () => {
-  console.log('listening on *:',portHTTP);
+  console.log('http listening on *:',portHTTP);
 });
 
 serverHTTPS.listen(portHTTPS,()=>{
-  console.log('listening on *:', portHTTPS);
+  console.log('https listening on *:', portHTTPS);
 });
