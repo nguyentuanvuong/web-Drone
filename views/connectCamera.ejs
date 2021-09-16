@@ -6,7 +6,7 @@
     <%- include('./layout/header'); %>
   </head>
   <body>
-    <div style="margin-top: 60px;">
+    <div style="margin-top: 60px; text-align: center;">
       <form id="config" action="javascript:alert;">
         <select id="videoSource"></select>
         <select id="fps">
@@ -20,20 +20,18 @@
           <option value="144">144p</option>
           <option value="240">240p</option>
           <option value="360">360p</option>
-          <option value="640">640p</option>
+          <!-- <option value="640">640p</option>
           <option value="720">720p</option>
-          <option value="1280">1280p</option>
+          <option value="1280">1280p</option> -->
         </select>
         <input type="submit" value="Connect">
-      </form>      
-   </div>
-   <div>
-    <video id="video" width="48%" controls autoplay></video>
+      </form>
+   
+    <video id="video" width="48%" controls autoplay></video><br>
+    <img id="image" src="img/noCam/noCamera1.jpg" alt="" width="48%">
     <canvas id="preview" style="display: none;" ></canvas>
-    <img id="image" src="" alt="" width="48%">
    </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       <script type="text/javascript" src="/socket.io/socket.io.js"></script>
       <script src="js/socket.io/connectcamera.js"></script>
       <script>

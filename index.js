@@ -4,19 +4,18 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 
+require('dotenv').config();
+
 const options = {
   key:  fs.readFileSync('ssl/key.pem'),
   cert:  fs.readFileSync('ssl/cert.pem')
 };
 
-const serverHTTP = http.createServer(app);
-const serverHTTPS = https.createServer(options,app);
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(options,app);
 
 const { Server } = require("socket.io");
-const io = new Server(serverHTTPS);
-
-const portHTTP = 3000;
-const portHTTPS = 3443;
+const io = new Server(httpsServer);
 
 app.set("view engine","ejs");
 app.set("views", "./views");
@@ -25,11 +24,10 @@ app.use(express.static('public'));
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
 var apiRouter = require('./routes/api');
+
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
-
-
 
 io.on('connection', (socket) => {
   console.log(socket.id,' connect');
@@ -54,10 +52,10 @@ io.on('connection', (socket) => {
     });
   });
 
-  serverHTTP.listen(portHTTP, () => {
-  console.log('http listening on *:',portHTTP);
+httpServer.listen(process.env.HTTP_PORT, () => {
+  console.log('http listening on *:',process.env.HTTP_PORT);
 });
 
-serverHTTPS.listen(portHTTPS,()=>{
-  console.log('https listening on *:', portHTTPS);
+httpsServer.listen(process.env.HTTPS_PORT,()=>{
+  console.log('https listening on *:', process.env.HTTPS_PORT);
 });
