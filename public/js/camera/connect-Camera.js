@@ -8,6 +8,8 @@ socket.on("connect", () => {
         console.log(msg);
     });
   });
+
+
 const list_camera = document.getElementById('list_camera');
 navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
     navigator.mediaDevices.enumerateDevices().then(function (devices) {
@@ -32,25 +34,7 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
 
 var canvas = document.getElementById("preview");
 var context = canvas.getContext("2d");
-
-// setInterval(()=>{
-//     context.drawImage(video,0,0,context.width, context.height);
-//     var imgString = canvas.toDataURL();
-//     imgString = imgString.slice(22);
-//     socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
-// },1000);
-
 var val;
-
-function Connect(){
-    clearInterval(val);
-    val = setInterval(()=>{
-        context.drawImage(video,0,0,context.width, context.height);
-        var imgString = canvas.toDataURL();
-        imgString = imgString.slice(22);
-        socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
-    },1000);
-}
 
 function viewCamera(device){
     var video = document.getElementById("video");
@@ -69,4 +53,14 @@ function viewCamera(device){
     })
     .catch(function(err) { console.log(err.name + ": " + err.message); });
     Connect();
+}
+
+function Connect(){
+    clearInterval(val);
+    val = setInterval(()=>{
+        context.drawImage(video,0,0,context.width, context.height);
+        var imgString = canvas.toDataURL();
+        imgString = imgString.slice(22);
+        socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
+    },1000);
 }
