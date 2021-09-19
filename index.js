@@ -7,8 +7,8 @@ const fs = require('fs');
 require('dotenv').config();
 
 const options = {
-  key:  fs.readFileSync('ssl/key.pem'),
-  cert:  fs.readFileSync('ssl/cert.pem')
+  key:  fs.readFileSync('config/ssl/key.pem'),
+  cert:  fs.readFileSync('config/ssl/cert.pem')
 };
 
 const httpServer = http.createServer(app);
@@ -37,7 +37,7 @@ app.use('/api', apiRouter);
 sio.on('connection', (socket) => {
   console.log(socket.id,' connect');
   listSocket[count] = socket.id;
-  count++;
+  // count++;
   socket.emit('listSocket', listSocket);
 
   socket.on('StreamID', msg=>{
@@ -51,10 +51,6 @@ sio.on('connection', (socket) => {
 
 io.on('connection', (socket) => {
   console.log(socket.id,' connect');
-
-  // count++;
-  // listSocket[count] = socket.id;
-  // socket.emit('listSocket', listSocket);
 
   socket.on('ResultsColab',msg=>{
     msg = JSON.parse(msg);
