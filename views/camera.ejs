@@ -10,13 +10,18 @@
       <div  class="row">
         <div id="list_camera" class="d-flex flex-column align-items-stretch  bg-white col-4" ></div>
         <div id="view-Cam" class="col-8">
+          <div></div>
           <video id="video" src="video/Loading Screen Effect.mp4" width="100%"  loop autoplay></video>
           <canvas id="preview" style="display: none;"></canvas>
+        </div>
+        <div >
+          
         </div>
       </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/camera/connect-Camera.js"></script>
+
   </body>
   <footer>
     <%- include('./layout/footer');%>

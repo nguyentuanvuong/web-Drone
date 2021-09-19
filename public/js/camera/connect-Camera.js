@@ -4,8 +4,13 @@ socket.on("connect", () => {
     //     const imgItem = document.getElementById('image');
     //     imgItem.src = `data:image/png;base64,${msg.img}`;
     // });
+    
     socket.on(`ResultsID${socket.id}`,msg=>{
         console.log(msg);
+        
+        for(var i = 0; i < msg.results.length; i ++){
+
+        }
     });
   });
 
@@ -40,7 +45,7 @@ function viewCamera(device){
     var video = document.getElementById("video");
     var constraints = {video: {  width: 1920, height: 1080, deviceId: device } };
 
-    canvas.width = 640;
+    canvas.width = 100;
     canvas.height = canvas.width*9/16;
     context.width = canvas.width;
     context.height = canvas.height;
