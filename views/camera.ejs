@@ -10,12 +10,24 @@
       <div  class="row">
         <div id="list_camera" class="d-flex flex-column align-items-stretch  bg-white col-4" ></div>
         <div id="view-Cam" class="col-8">
-          <div></div>
+          <div>
+            <form>
+              <label>FPS</label>
+              <select>
+                <option value="1">1 fps</option>
+                <option value="10">10 fps</option>
+                <option value="30">30 fps</option>
+              </select>
+              <label>resolution</label>
+              <select>
+                <option value="144">144p</option>
+                <option value="360">360p</option>
+                <option value="720">720p</option>
+              </select>
+            </form>
+          </div>
           <video id="video" src="video/Loading Screen Effect.mp4" width="100%"  loop autoplay></video>
-          <canvas id="preview" style="display: none;"></canvas>
-        </div>
-        <div >
-          
+          <canvas id="preview" style="display: none;" width="50%"></canvas>
         </div>
       </div>
     </div>
