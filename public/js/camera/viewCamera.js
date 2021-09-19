@@ -1,4 +1,4 @@
-var socket = io();
+
 socket.on('message', function(msg) {
   var item = document.getElementById('messages');
   item.textContent = msg;

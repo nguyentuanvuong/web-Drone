@@ -5,7 +5,8 @@ router.get('/',(req,res)=>{
     res.render('index');
   });
 router.get('/connect-camera',(req,res)=>{
-      res.render('connectCamera');
+  res.render('camera');
+  // res.render('connectCamera');
     });
 router.get('/drone',(req,res)=>{
     res.render('camDrone');

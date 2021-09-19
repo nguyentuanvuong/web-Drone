@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Connect Camera</title>
+    <%- include('./layout/head'); %>
+    <%- include('./layout/header'); %>
+  </head>
+  <body>
+    <div class="" style="margin-top: 60px;" class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+      <div id="list_camera" class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" style="width: 30%;"></div>
+      <!-- <select id="list_camera" name="sweets" ></select> -->
+      <div id="view-Cam"></div>
+      <!-- <div >
+        <video src="video/Loading Screen Effect.mp4" width="50%" autoplay loop></video>
+        <canvas style="display: none;"></canvas>
+      </div> -->
+    </div>
+    <!-- <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.5.0.js"></script> -->
+
+    <script>
+        const socket = io();
+        const list_camera = document.getElementById('list_camera');
+        navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
+            navigator.mediaDevices.enumerateDevices().then(function (devices) {
+                for(var i = 0; i < devices.length; i ++){
+                    var device = devices[i];
+                    if (device.kind === 'videoinput') {
+                        const item = document.createElement('div');
+                        item.id = device.deviceId;
+                        item.innerHTML = `
+                        <a id = "${device.deviceId}" class="list-group-item list-group-item-action py-3 lh-tight" onclick="viewCamera(this.id)">
+                          <div class="d-flex w-100 align-items-center justify-content-between">
+                            <strong class="mb-1">${device.label}</strong>
+                          </div>
+                        <div class="col-10 mb-1 small">${device.deviceId}</div>
+                      </a>
+                      `;
+                        list_camera.appendChild(item);
+                    }
+                };
+            });
+        });
+        function viewCamera(id){
+          console.log(id);
+        }
+    </script>
+  </body>
+  <footer>
+    <%- include('./layout/footer');%>
+  </footer>
+</html>

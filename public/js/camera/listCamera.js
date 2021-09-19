@@ -1,3 +1,16 @@
+var socket = io();
+socket.on('listSocket', (msg) => {
+    const camera = document.getElementById('listCamera');
+    console.log(msg.length);
+    for(let i = 0; i < msg.length; i++){
+        const item = document.createElement('img');
+        item.id = msg[i];
+        item.src = 'img/noCam/noCamera1.jpg'
+        camera.appendChild(item);
+    }
+
+});
+
 // fetch('/api/camera')
 //     .then(res => res.json())
 //     .then(dt =>{

@@ -4,7 +4,12 @@ socket.on("connect", () => {
         const imgItem = document.getElementById('image');
         imgItem.src = `data:image/png;base64,${msg.img}`;
     });
+    socket.on(`ResultsID${socket.id}`,msg=>{
+        console.log(msg);
+    });
   });
+
+
 
 navigator.mediaDevices.enumerateDevices().then(function (devices) {
     for(var i = 0; i < devices.length; i ++){
@@ -48,8 +53,6 @@ function viewCam(device, fps,resolution){
         context.drawImage(video,0,0,context.width, context.height);
         var imgString = canvas.toDataURL();
         imgString = imgString.slice(22);
-        // socket.emit('stream cam',imgString);
-        
         socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
     },1000/fps);
 }

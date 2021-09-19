@@ -15,7 +15,12 @@ const httpServer = http.createServer(app);
 const httpsServer = https.createServer(options,app);
 
 const { Server } = require("socket.io");
-const io = new Server(httpsServer);
+const sio = new Server(httpsServer);
+const io = new Server(httpServer);
+
+var count = 0
+var listSocket = []
+
 
 app.set("view engine","ejs");
 app.set("views", "./views");
@@ -29,28 +34,37 @@ app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
 
+sio.on('connection', (socket) => {
+  console.log(socket.id,' connect');
+  listSocket[count] = socket.id;
+  count++;
+  socket.emit('listSocket', listSocket);
+
+  socket.on('StreamID', msg=>{
+    sio.emit(msg.socketID,msg);
+    io.emit('StreamColab',msg);
+  }); 
+  socket.on('disconnect', () => {
+    console.log(socket.id,' disconnected');
+  });
+});
+
 io.on('connection', (socket) => {
   console.log(socket.id,' connect');
-  socket.on('message', msg => {
-    io.emit("message", msg);
-    // socket.broadcast.emit("message", msg);
-    });
-    socket.on("stream", msg => {
-      io.emit("stream", msg);
-    });
-    socket.on('log',msg=>{
-      io.emit('log',msg);
-    });
-    socket.on("stream cam", img => {
-      socket.broadcast.emit("stream cam", img);
-    });
-    socket.on('StreamID', msg=>{
-      io.emit(msg.socketID,msg);
-    }); 
-    socket.on('disconnect', () => {
-      console.log(socket.id,' disconnected');
-    });
+
+  // count++;
+  // listSocket[count] = socket.id;
+  // socket.emit('listSocket', listSocket);
+
+  socket.on('ResultsColab',msg=>{
+    msg = JSON.parse(msg);
+    sio.emit(`ResultsID${msg.socketID}`,msg);
   });
+
+  socket.on('disconnect', () => {
+    console.log(socket.id,' disconnected');
+  });
+});
 
 httpServer.listen(process.env.HTTP_PORT, () => {
   console.log('http listening on *:',process.env.HTTP_PORT);
