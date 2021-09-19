@@ -40,8 +40,19 @@ var context = canvas.getContext("2d");
 //     socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
 // },1000);
 
+var val;
+
+function Connect(){
+    clearInterval(val);
+    val = setInterval(()=>{
+        context.drawImage(video,0,0,context.width, context.height);
+        var imgString = canvas.toDataURL();
+        imgString = imgString.slice(22);
+        socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
+    },1000);
+}
+
 function viewCamera(device){
-    // const item = document.getElementById('view-Cam');
     var video = document.getElementById("video");
     var constraints = {video: {  width: 1920, height: 1080, deviceId: device } };
 
@@ -49,8 +60,7 @@ function viewCamera(device){
     canvas.height = canvas.width*9/16;
     context.width = canvas.width;
     context.height = canvas.height;
-    navigator.mediaDevices.getUserMedia(constraints)
-    .then(function(mediaStream) {
+    navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
         var video = document.querySelector('video');
         video.srcObject = mediaStream;
         video.onloadedmetadata = function(e) {
@@ -58,7 +68,5 @@ function viewCamera(device){
         };
     })
     .catch(function(err) { console.log(err.name + ": " + err.message); });
-
-    
-
+    Connect();
 }
