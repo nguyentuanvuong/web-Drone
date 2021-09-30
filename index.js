@@ -21,7 +21,6 @@ const io = new Server(httpServer);
 var count = 0
 var listSocket = []
 
-
 app.set("view engine","ejs");
 app.set("views", "./views");
 app.use(express.static('public'));
@@ -52,9 +51,15 @@ sio.on('connection', (socket) => {
 io.on('connection', (socket) => {
   console.log(socket.id,' connect');
 
+  socket.on('StreamID', msg=>{
+    // sio.emit(msg.socketID,msg);
+    io.emit('StreamColab',msg);
+  });
+
   socket.on('ResultsColab',msg=>{
     msg = JSON.parse(msg);
     sio.emit(`ResultsID${msg.socketID}`,msg);
+    io.emit(`ResultsID${msg.socketID}`,msg);
   });
 
   socket.on('disconnect', () => {
@@ -68,4 +73,5 @@ httpServer.listen(process.env.HTTP_PORT, () => {
 
 httpsServer.listen(process.env.HTTPS_PORT,()=>{
   console.log('https listening on *:', process.env.HTTPS_PORT);
+
 });
