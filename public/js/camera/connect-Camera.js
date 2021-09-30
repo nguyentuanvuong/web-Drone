@@ -7,9 +7,14 @@ socket.on("connect", () => {
     
     socket.on(`ResultsID${socket.id}`,msg=>{
         console.log(msg);
-        
+        const camera = document.getElementById("video");
+        const results = document.getElementById("results");
+        results.width = camera.offsetWidth;
+        results.height = camera.offsetHeight;
+        var ctx = results.getContext("2d");
+        ctx.clearRect(0, 0, results.width, results.height);
         for(var i = 0; i < msg.results.length; i ++){
-
+            ctx.strokeRect(msg.results[i].x0, msg.results[i].y0, msg.results[i].x1, msg.results[i].y1);
         }
     });
   });
@@ -42,10 +47,9 @@ var context = canvas.getContext("2d");
 var val;
 
 function viewCamera(device){
-    var video = document.getElementById("video");
+    const camera = document.getElementById('video');
     var constraints = {video: {  width: 1920, height: 1080, deviceId: device } };
-
-    canvas.width = 100;
+    canvas.width = 460;
     canvas.height = canvas.width*9/16;
     context.width = canvas.width;
     context.height = canvas.height;
