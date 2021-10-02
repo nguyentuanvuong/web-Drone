@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Connect Camera</title>
-    <%- include('./layout/head'); %>
+
+<head>
+  <title>Connect Camera</title>
+  <%- include('./layout/head'); %>
     <%- include('./layout/header'); %>
-  </head>
-  <body style="margin-top: 60px;">
-    <div  class="row">
-      <div id="list_camera" class="col-4" ></div>
-      <div id="view-Cam" class="col-8">
+</head>
+
+<body style="margin-top: 60px;">
+  <div class="row">
+    <div id="list_camera" class="col-4"></div>
+    <div id="view-Cam" class="col-8 " style="position: relative;">
+      <div style="position: relative;">
         <form>
           <label>FPS</label>
           <select>
@@ -24,18 +27,19 @@
           </select>
         </form>
         <div>
-          <video id="video" poster="img/noCam/noCamera1.jpg" width="100%" style="position: fixed;" loop> </video>
-          <canvas id="results" style="position: fixed; border: 1px solid red"></canvas>
+          <video id="video" poster="img/noCam/noCamera1.jpg" width="100%" style="position: absolute;" loop> </video>
+          <canvas id="results" style="position: relative; border: 1px solid red"></canvas>
           <canvas id="preview" style="display: none;"></canvas>
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/camera/connect-Camera.js"></script>
-    
-  </body>
-  <footer>
-    <%- include('./layout/footer');%>
-  </footer>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/camera/connect-Camera.js"></script>
+</body>
+<footer>
+  <%- include('./layout/footer');%>
+</footer>
+
 </html>
