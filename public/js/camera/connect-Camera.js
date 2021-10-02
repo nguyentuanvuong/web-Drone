@@ -9,8 +9,7 @@ results.height = camera.offsetHeight;
 
 socket.on("connect", () => {
     socket.on(`ResultsID${socket.id}`,msg=>{
-        // console.log(msg.time);
-        
+        // console.log(msg.time);        
         results.width = camera.offsetWidth;
         results.height = camera.offsetHeight;
         var ctx = results.getContext("2d");
