@@ -3,11 +3,15 @@ var preview = document.getElementById("preview");
 var context = preview.getContext("2d");
 var val;
 
+const camera = document.getElementById("video");
+const results = document.getElementById("results");
+results.width = camera.offsetWidth;
+results.height = camera.offsetHeight;
+
 socket.on("connect", () => {
     socket.on(`ResultsID${socket.id}`,msg=>{
         // console.log(msg.time);
-        const camera = document.getElementById("video");
-        const results = document.getElementById("results");
+        
         results.width = camera.offsetWidth;
         results.height = camera.offsetHeight;
         var ctx = results.getContext("2d");
@@ -55,7 +59,7 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
 function viewCamera(device){
     var constraints = {video: {  width: 1920, height: 1080, deviceId: device } };
     var fps = 1;
-    preview.width = 460;
+    preview.width = 420;
     preview.height = preview.width*9/16;
     context.width = preview.width;
     context.height = preview.height;
