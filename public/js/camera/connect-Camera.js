@@ -1,12 +1,11 @@
 const socket = io();
+var preview = document.getElementById("preview");
+var context = preview.getContext("2d");
+var val;
+
 socket.on("connect", () => {
-    // socket.on(socket.id,msg=>{
-    //     const imgItem = document.getElementById('image');
-    //     imgItem.src = `data:image/png;base64,${msg.img}`;
-    // });
-    
     socket.on(`ResultsID${socket.id}`,msg=>{
-        console.log(msg);
+        // console.log(msg.time);
         const camera = document.getElementById("video");
         const results = document.getElementById("results");
         results.width = camera.offsetWidth;
@@ -14,7 +13,18 @@ socket.on("connect", () => {
         var ctx = results.getContext("2d");
         ctx.clearRect(0, 0, results.width, results.height);
         for(var i = 0; i < msg.results.length; i ++){
-            ctx.strokeRect(msg.results[i].x0, msg.results[i].y0, msg.results[i].x1, msg.results[i].y1);
+            var x0 = msg.results[i].x0;
+            var y0 = msg.results[i].y0;
+            var x1 = msg.results[i].x1;
+            var y1 = msg.results[i].y1;
+
+            // x0 = x0/preview.offsetWidth*camera.offsetWidth;
+            // y0 = y0/preview.offsetHeight*camera.offsetHeight;
+            // x1 = x1/preview.offsetWidth*camera.offsetWidth;
+            // y1 = y1/preview.offsetHeight*camera.offsetHeight;
+
+            ctx.strokeStyle = 'red';
+            ctx.strokeRect(x0, y0, x1, y1);
         }
     });
   });
@@ -42,17 +52,13 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
     });
 });
 
-var canvas = document.getElementById("preview");
-var context = canvas.getContext("2d");
-var val;
-
 function viewCamera(device){
-    const camera = document.getElementById('video');
     var constraints = {video: {  width: 1920, height: 1080, deviceId: device } };
-    canvas.width = 460;
-    canvas.height = canvas.width*9/16;
-    context.width = canvas.width;
-    context.height = canvas.height;
+    var fps = 1;
+    preview.width = 460;
+    preview.height = preview.width*9/16;
+    context.width = preview.width;
+    context.height = preview.height;
     navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
         var video = document.querySelector('video');
         video.srcObject = mediaStream;
@@ -61,15 +67,19 @@ function viewCamera(device){
         };
     })
     .catch(function(err) { console.log(err.name + ": " + err.message); });
-    Connect();
+    Connect(fps);
 }
 
-function Connect(){
+function Connect(fps){
     clearInterval(val);
     val = setInterval(()=>{
         context.drawImage(video,0,0,context.width, context.height);
-        var imgString = canvas.toDataURL();
+        var imgString = preview.toDataURL();
         imgString = imgString.slice(22);
         socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
-    },1000);
+    },1000/fps);
 }
+
+// setInterval(()=>{
+//     context.drawImage(video,0,0,context.width, context.height);
+// },1000/60);
