@@ -77,8 +77,6 @@ function viewCamera(device){
 function Connect(fps){
     clearInterval(val);
     val = setInterval(()=>{
-        results.width = camera.offsetWidth;
-        results.height = camera.offsetHeight;
         context.drawImage(video,0,0,context.width, context.height);
         var imgString = preview.toDataURL();
         imgString = imgString.slice(22);
