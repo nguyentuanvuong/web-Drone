@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>Connect Camera</title>
   <%- include('./layout/head'); %>
-    <%- include('./layout/header'); %>
+  <%- include('./layout/header'); %>
 </head>
 
-<body style="margin-top: 60px;">
+<body style="margin-top: 60px; width: 99%;" >
   <div class="row">
-    <div id="list_camera" class="col-4"></div>
+    <div class="col-4">
+      <div id="list_camera" ></div>
+      <!-- <div id="map" style="width: 100px;"></div> -->
+      
+    </div>
     <div id="view-Cam" class="col-8 " style="position: relative;">
+      
       <div style="position: relative;">
         <form>
           <label>FPS</label>
@@ -19,13 +23,14 @@
             <option value="10">10 fps</option>
             <option value="30">30 fps</option>
           </select>
-          <!-- <label>resolution</label>
+          <label>resolution</label>
           <select>
             <option value="144">144p</option>
             <option value="360">360p</option>
             <option value="720">720p</option>
-          </select> -->
+          </select>
         </form>
+
         <div>
           <video id="video" poster="img/noCam/noCamera1.jpg" width="100%" style="position: absolute;" loop> </video>
           <canvas id="results" style="position: relative;"></canvas>
@@ -34,9 +39,28 @@
       </div>
     </div>
   </div>
+  <div style="width: 100%;">
+    <div id="map" style="height: 80%; width: 100%;"></div>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/camera/connect-Camera.js"></script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHEpxiql-60RbABZAGAkaFZQxBNQo7zqw&callback=initMap&libraries=&v=weekly" async ></script>
+  <script>
+    let map;
+    function initMap() {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: {
+          lat: 14.313451,
+          lng: 108.966897
+        },
+        mapTypeId: "satellite",
+      });
+    }
+  </script>
+
 </body>
 <footer>
   <%- include('./layout/footer');%>

@@ -1,10 +1,9 @@
 const socket = io();
-var preview = document.getElementById("preview");
-var context = preview.getContext("2d");
-var val;
-
 const camera = document.getElementById("video");
 const results = document.getElementById("results");
+var val;
+
+
 results.width = camera.offsetWidth;
 results.height = camera.offsetHeight;
 
@@ -57,6 +56,8 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
 });
 
 function viewCamera(device){
+    const preview = document.getElementById("preview");
+    var context = preview.getContext("2d");
     var constraints = {video: {  width: 1920, height: 1080, deviceId: device } };
     var fps = 1;
     preview.width = 420;
@@ -77,8 +78,10 @@ function viewCamera(device){
 function Connect(fps){
     clearInterval(val);
     val = setInterval(()=>{
+        const p = document.getElementById("preview");
+        var context = p.getContext("2d");
         context.drawImage(video,0,0,context.width, context.height);
-        var imgString = preview.toDataURL();
+        var imgString = p.toDataURL();
         imgString = imgString.slice(22);
         socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
     },1000/fps);
