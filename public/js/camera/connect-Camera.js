@@ -82,6 +82,7 @@ function viewCamera(device){
 }
 
 function Connect(fps){
+    console.log(fps);
     clearInterval(val);
     val = setInterval(()=>{
         const p = document.getElementById("preview");
@@ -92,7 +93,3 @@ function Connect(fps){
         socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
     },1000/fps);
 }
-
-// setInterval(()=>{
-//     context.drawImage(video,0,0,context.width, context.height);
-// },1000/60);
