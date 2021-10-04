@@ -58,7 +58,13 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
 function viewCamera(device){
     const preview = document.getElementById("preview");
     var context = preview.getContext("2d");
-    var constraints = {video: {  width: 1920, height: 1080, deviceId: device } };
+    var constraints = {
+        video: {  
+            width: 1920,
+            height: 1080,
+            deviceId: device ? {exact: device}: undefined
+        }
+    };
     var fps = 1;
     preview.width = 420;
     preview.height = preview.width*9/16;
