@@ -33,6 +33,7 @@ socket.on("connect", () => {
 
 
 const list_camera = document.getElementById('list_camera');
+// navigator.mediaDevices.getUserMedia({  video: true });
 navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
     navigator.mediaDevices.enumerateDevices().then(function (devices) {
         for(var i = 0; i < devices.length; i ++){
