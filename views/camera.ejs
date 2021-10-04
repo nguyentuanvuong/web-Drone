@@ -15,10 +15,20 @@
       <div style="position: relative;">
         <label>FPS</label>
           <select onchange="Connect(this.value)">
+
+
             <option value="1">1 fps</option>
             <option value="5">5 fps</option>
             <option value="10">10 fps</option>
           </select>
+
+          <!-- <label>resolution</label>
+          <select>
+            <option value="144">144p</option>
+            <option value="360">360p</option>
+            <option value="720">720p</option>
+          </select> -->
+
         <div >
           <video id="video" poster="img/noCam/noCamera1.jpg" width="100%" style="position: absolute;" playsinline > </video>
           <canvas id="results" style="position: relative;"></canvas>
