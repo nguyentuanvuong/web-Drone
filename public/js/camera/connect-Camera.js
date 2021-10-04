@@ -81,8 +81,12 @@ function viewCamera(device){
     Connect(fps);
 }
 
+function fps(fps){
+        
+    Connect(fps);
+}
+
 function Connect(fps){
-    console.log(fps);
     clearInterval(val);
     val = setInterval(()=>{
         const p = document.getElementById("preview");
