@@ -6,7 +6,6 @@ var val;
 
 var color = ['Lime','Blue','Yellow','Cyan','Magenta'];
 
-
 results.width = camera.offsetWidth;
 results.height = camera.offsetHeight;
 
