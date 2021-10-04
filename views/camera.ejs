@@ -8,30 +8,18 @@
 
 <body style="margin-top: 60px; width: 99%;" >
   <div class="row">
-    <div class="col-4">
-      <div id="list_camera" ></div>
-      <!-- <div id="map" style="width: 100px;"></div> -->
-      
+    <div id="list_camera" class="col-4">
+      <!-- <div id="list_camera" ></div>       -->
     </div>
     <div id="view-Cam" class="col-8 " style="position: relative;">
-      
       <div style="position: relative;">
-        <form>
-          <label>FPS</label>
-          <select id="fps">
+        <label>FPS</label>
+          <select onchange="Connect(this.value)">
             <option value="1">1 fps</option>
+            <option value="5">5 fps</option>
             <option value="10">10 fps</option>
-            <option value="30">30 fps</option>
           </select>
-          <label>resolution</label>
-          <select>
-            <option value="144">144p</option>
-            <option value="360">360p</option>
-            <option value="720">720p</option>
-          </select>
-        </form>
-
-        <div>
+        <div >
           <video id="video" poster="img/noCam/noCamera1.jpg" width="100%" style="position: absolute;" playsinline > </video>
           <canvas id="results" style="position: relative;"></canvas>
           <canvas id="preview" style="display: none;"></canvas>
@@ -39,27 +27,11 @@
       </div>
     </div>
   </div>
-  <div style="width: 100%;">
-    <div id="map" style="height: 80%; width: 100%;"></div>
-  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/camera/connect-Camera.js"></script>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHEpxiql-60RbABZAGAkaFZQxBNQo7zqw&callback=initMap&libraries=&v=weekly" async ></script>
-  <script>
-    let map;
-    function initMap() {
-      const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
-        center: {
-          lat: 14.313451,
-          lng: 108.966897
-        },
-        mapTypeId: "satellite",
-      });
-    }
-  </script>
+
 
 </body>
 <footer>

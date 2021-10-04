@@ -1,7 +1,10 @@
 const socket = io();
 const camera = document.getElementById("video");
-const results = document.getElementById("results");
+
+var r = {};
 var val;
+
+var color = ['Lime','Blue','Yellow','Cyan','Magenta'];
 
 
 results.width = camera.offsetWidth;
@@ -9,27 +12,9 @@ results.height = camera.offsetHeight;
 
 socket.on("connect", () => {
     socket.on(`ResultsID${socket.id}`,msg=>{
-        // console.log(msg.time);        
-        results.width = camera.offsetWidth;
-        results.height = camera.offsetHeight;
-        var ctx = results.getContext("2d");
-        ctx.clearRect(0, 0, results.width, results.height);
-        for(var i = 0; i < msg.results.length; i ++){
-            var x0 = msg.results[i].x0;
-            var y0 = msg.results[i].y0;
-            var x1 = msg.results[i].x1;
-            var y1 = msg.results[i].y1;
-
-            // x0 = x0/preview.offsetWidth*camera.offsetWidth;
-            // y0 = y0/preview.offsetHeight*camera.offsetHeight;
-            // x1 = x1/preview.offsetWidth*camera.offsetWidth;
-            // y1 = y1/preview.offsetHeight*camera.offsetHeight;
-
-            ctx.strokeStyle = 'red';
-            ctx.strokeRect(x0, y0, x1, y1);
-        }
+        drawResults(msg);
     });
-  });
+});
 
 
 const list_camera = document.getElementById('list_camera');
@@ -66,8 +51,8 @@ function viewCamera(device){
         }
     };
     var fps = 1;
-    preview.width = 420;
-    preview.height = preview.width*9/16;
+    preview.width = 640;
+    preview.height = 480;
     context.width = preview.width;
     context.height = preview.height;
     navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
@@ -81,8 +66,46 @@ function viewCamera(device){
     Connect(fps);
 }
 
+function drawResults(msg){
+    const results = document.getElementById("results");
+    var ctx = results.getContext("2d");
+
+    results.width = camera.offsetWidth;
+    results.height = camera.offsetHeight;
+    
+    ctx.width = results.width;
+    ctx.height = results.height;
+    ctx.clearRect(0, 0, results.width, results.height);
+
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "yellow";
+    ctx.fillText(`Time: ${msg.time}`,2,20);
+    ctx.fillText(`results detect: ${msg.output}`,2,results.height-5);
+
+    for(var i = 0; i < msg.results.length; i ++){
+
+        var x0 = msg.results[i].x0;
+        var y0 = msg.results[i].y0;
+        var x1 = msg.results[i].x1;
+        var y1 = msg.results[i].y1;
+
+        x0 = x0 * results.width / 640;
+        y0 = y0 * results.height / 480;
+        x1 = x1 * results.width / 640;
+        y1 = y1 * results.height / 480;
+
+        x1 = x1 - x0;
+        y1 = y1 - y0;
+
+        ctx.fillStyle = color[i];
+        ctx.fillText(`${msg.results[i].label}`,x0,y0-5);
+        ctx.strokeStyle = color[i];
+        ctx.strokeRect(x0, y0, x1, y1);
+    }
+    
+}
+
 function Connect(fps){
-    console.log(fps);
     clearInterval(val);
     val = setInterval(()=>{
         const p = document.getElementById("preview");
