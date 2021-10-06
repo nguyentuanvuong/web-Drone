@@ -1,9 +1,5 @@
 const socket = io();
 const camera = document.getElementById("video");
-
-var r = {};
-var val;
-
 var color = ['Lime','Blue','Yellow','Cyan','Magenta'];
 
 results.width = camera.offsetWidth;
@@ -17,7 +13,6 @@ socket.on("connect", () => {
 
 
 const list_camera = document.getElementById('list_camera');
-// navigator.mediaDevices.getUserMedia({  video: true });
 navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
     navigator.mediaDevices.enumerateDevices().then(function (devices) {
         for(var i = 0; i < devices.length; i ++){
@@ -66,9 +61,7 @@ function viewCamera(device){
 }
 
 function drawResults(msg){
-    const results = document.getElementById("results");
     var ctx = results.getContext("2d");
-
     results.width = camera.offsetWidth;
     results.height = camera.offsetHeight;
     
@@ -103,7 +96,10 @@ function drawResults(msg){
     }
     
 }
-
+var val;
+function disconnect(){
+    clearInterval(val);
+}
 function Connect(fps){
     clearInterval(val);
     val = setInterval(()=>{

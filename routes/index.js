@@ -6,11 +6,7 @@ router.get('/',(req,res)=>{
   });
 router.get('/connect-camera',(req,res)=>{
   res.render('camera');
-  // res.render('connectCamera');
     });
-router.get('/drone',(req,res)=>{
-    res.render('camDrone');
-  });
 router.get('/ALlCam',(req,res)=>{
     res.render('ALlCam');
   });
