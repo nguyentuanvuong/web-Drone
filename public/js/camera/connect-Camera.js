@@ -7,11 +7,10 @@ results.height = camera.offsetHeight;
 
 socket.on("connect", () => {
     socket.on(`ResultsID${socket.id}`,msg=>{
-        drawResults(msg);
         sendImg();
+        drawResults(msg);
     });
 });
-
 
 const list_camera = document.getElementById('list_camera');
 navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
@@ -77,7 +76,6 @@ function drawResults(msg){
     ctx.fillText(`results detect: ${msg.output}`,2,results.height-5);
 
     for(var i = 0; i < msg.results.length; i ++){
-
         var x0 = msg.results[i].x0;
         var y0 = msg.results[i].y0;
         var x1 = msg.results[i].x1;
@@ -96,7 +94,6 @@ function drawResults(msg){
         ctx.strokeStyle = color[i];
         ctx.strokeRect(x0, y0, x1, y1);
     }
-    
 }
 
 function sendImg(){
@@ -106,16 +103,4 @@ function sendImg(){
     var imgString = p.toDataURL();
     imgString = imgString.slice(22);
     socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
-}
-
-
-var val;
-function disconnect(){
-    clearInterval(val);
-}
-function Connect(fps){
-    clearInterval(val);
-    val = setInterval(()=>{
-        sendImg();
-    },1000/fps);
 }
