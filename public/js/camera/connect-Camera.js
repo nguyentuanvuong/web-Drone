@@ -57,7 +57,6 @@ function viewCamera(device){
         };
     })
     .catch(function(err) { console.log(err.name + ": " + err.message); });
-    // Connect(fps);
     sendImg();
 }
 
