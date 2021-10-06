@@ -18,8 +18,9 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
         for(var i = 0; i < devices.length; i ++){
             var device = devices[i];
             if (device.kind === 'videoinput') {
+                // const item = document.getElementById('list_camera');
                 const item = document.createElement('div');
-                item.id = device.deviceId;
+                // item.id = device.deviceId;
                 item.innerHTML = `
                 <a id = "${device.deviceId}" class="list-group-item list-group-item-action py-3 lh-tight" onclick="viewCamera(this.id)">
                     <div class="d-flex w-100 align-items-center justify-content-between">
@@ -35,6 +36,12 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
 });
 
 function viewCamera(device){
+    // var device1 = '';
+    // const active1 = document.getElementById(device1);
+    // const active = document.getElementById(device);
+    // active1.className = active.className;
+    // active.className = `${active.className} active`;
+    // device1 = device;
     const preview = document.getElementById("preview");
     var context = preview.getContext("2d");
     var constraints = {
@@ -71,9 +78,9 @@ function drawResults(msg){
 
     ctx.font = "20px Arial";
     ctx.fillStyle = "yellow";
-    ctx.fillText(`Time: ${msg.time}`,2,20);
-    ctx.fillText(`results detect: ${msg.output}`,2,results.height-5);
-
+    ctx.fillText(`Detect: ${msg.output}`,2,20);
+    ctx.fillText(`Time: ${msg.time}`,2,40);
+    
     for(var i = 0; i < msg.results.length; i ++){
         var x0 = msg.results[i].x0;
         var y0 = msg.results[i].y0;
