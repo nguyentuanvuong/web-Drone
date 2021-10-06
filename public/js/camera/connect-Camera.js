@@ -8,6 +8,7 @@ results.height = camera.offsetHeight;
 socket.on("connect", () => {
     socket.on(`ResultsID${socket.id}`,msg=>{
         drawResults(msg);
+        sendImg();
     });
 });
 
@@ -57,7 +58,8 @@ function viewCamera(device){
         };
     })
     .catch(function(err) { console.log(err.name + ": " + err.message); });
-    Connect(fps);
+    // Connect(fps);
+    sendImg();
 }
 
 function drawResults(msg){
@@ -96,6 +98,17 @@ function drawResults(msg){
     }
     
 }
+
+function sendImg(){
+    const p = document.getElementById("preview");
+    var context = p.getContext("2d");
+    context.drawImage(video,0,0,context.width, context.height);
+    var imgString = p.toDataURL();
+    imgString = imgString.slice(22);
+    socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
+}
+
+
 var val;
 function disconnect(){
     clearInterval(val);
@@ -103,11 +116,6 @@ function disconnect(){
 function Connect(fps){
     clearInterval(val);
     val = setInterval(()=>{
-        const p = document.getElementById("preview");
-        var context = p.getContext("2d");
-        context.drawImage(video,0,0,context.width, context.height);
-        var imgString = p.toDataURL();
-        imgString = imgString.slice(22);
-        socket.emit("StreamID",{"socketID":socket.id, "img": imgString});
+        sendImg();
     },1000/fps);
 }
