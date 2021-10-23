@@ -75,7 +75,7 @@ function viewCamera(device){
         }
     };
     preview.width = 640;
-    preview.height = 480;
+    preview.height = preview.width*3/4;
     context.width = preview.width;
     context.height = preview.height;
     navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
@@ -100,8 +100,10 @@ function drawResults(msg){
 
     ctx.font = "20px Arial";
     ctx.fillStyle = "yellow";
-    ctx.fillText(`Detect: ${msg.output}`,0,20);
-    ctx.fillText(`Time: ${msg.time}`,0,40);
+    ctx.lineWidth = 4;
+    ctx.fillText(`FPS: ${parseFloat(1/msg.time).toFixed(0)}`,0,20);
+    ctx.fillText(`Detect: ${msg.output}`,0,40);
+    ctx.fillText(`Time: ${msg.time}`,0,60);
     
     for(var i = 0; i < msg.results.length; i ++){
         var x0 = msg.results[i].x0;
