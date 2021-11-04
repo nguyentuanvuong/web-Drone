@@ -101,13 +101,10 @@ function predictWebcam() {
             ctx.lineWidth = 4;
             ctx.strokeRect(x1, y1, width, height);
 
-            
-            
-
-            // ctx.font = "20px Arial";
-            // ctx.fillStyle = "yellow";
-            // ctx.lineWidth = 4;
-            // ctx.fillText(`${klass}`,x1,y1);
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "#00FFFF";
+            ctx.lineWidth = 4;
+            ctx.fillText(`${klass} ${score}`,x1,y1);
 
             console.log(klass, score, x1,y1,x2,y2);
         }
