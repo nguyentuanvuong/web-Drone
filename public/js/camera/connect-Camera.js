@@ -17,9 +17,15 @@ const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'tra
 
 const [modelWeight, modelHeight] = [640, 640];
 
-$("document").ready(async function() {
+// $("document").ready(async function() {
+//     model = await tf.loadGraphModel(weights);
+// });
+
+async function loadModel(){
     model = await tf.loadGraphModel(weights);
-});
+}
+
+loadModel();
 
 results.width = video.offsetWidth;
 results.height = video.offsetHeight;
@@ -66,7 +72,8 @@ function enableCam(device){
 function predictWebcam() {
     const input = tf.tidy(() => {
         return tf.image.resizeBilinear(tf.browser.fromPixels(video), [modelWeight, modelHeight])
-            .div(255.0).expandDims(0);
+            .div(255.0)
+            .expandDims(0);
     });
     model.executeAsync(input).then(res => {
         results.width = video.offsetWidth;
