@@ -4,19 +4,20 @@
   <title>Connect Camera</title>
   <%- include('./layout/head'); %>
   <%- include('./layout/header'); %>
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
 </head>
 
 <body>
   <div class="row">
     <div id="list_camera" class="col-4 scrollarea"></div>
     <div id="view-Cam" class="col-8 " style="position: relative;">
-      <video id="video" poster="img/noCam/noCamera1.jpg" width="100%" style="position: absolute;" playsinline > </video>
+      <video id="webcam" poster="img/nocam/noCamera1.jpg" width="100%" style="position: absolute;" autoplay > </video>
       <canvas id="results" style="position: relative;"></canvas>
-      <canvas id="preview" style="display: none;"></canvas>
     </div>
   </div>
-
-  
 </body>
 
 
