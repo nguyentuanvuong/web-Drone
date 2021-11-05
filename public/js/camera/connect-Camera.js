@@ -1,3 +1,6 @@
+// import * as tf from 'node_modules/@tensorflow/tfjs';
+
+
 const video = document.getElementById('webcam');
 const results = document.getElementById('results');
 var ctx = results.getContext("2d");
@@ -22,7 +25,10 @@ const [modelWeight, modelHeight] = [640, 640];
 // });
 
 async function loadModel(){
+    console.log('Load model');
+
     model = await tf.loadGraphModel(weights);
+    console.log(tf.getBackend());
 }
 
 loadModel();
@@ -37,6 +43,7 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
             var device = devices[i];
             if (device.kind === 'videoinput') {
                 const item = document.createElement('div');
+                console.log(device.deviceId);
                 item.innerHTML = `
                 <a id = "${device.deviceId}" class="list-group-item list-group-item-action py-3 lh-tight" onclick="enableCam(this.id)">
                     <div class="d-flex w-100 align-items-center justify-content-between">
@@ -54,6 +61,7 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
 
 function enableCam(device){
     if(model){
+        console.log('Run inference');
         var constraints = {
             video: {
                 width: 1920,
@@ -70,6 +78,7 @@ function enableCam(device){
 }
 
 function predictWebcam() {
+    
     const input = tf.tidy(() => {
         return tf.image.resizeBilinear(tf.browser.fromPixels(video), [modelWeight, modelHeight])
             .div(255.0)
@@ -113,7 +122,7 @@ function predictWebcam() {
             ctx.lineWidth = 4;
             ctx.fillText(`${klass} ${score}`,x1,y1);
 
-            console.log(klass, score, x1,y1,x2,y2);
+            console.log(klass, score);
         }
     });
     window.requestAnimationFrame(predictWebcam);

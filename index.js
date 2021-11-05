@@ -25,6 +25,8 @@ app.set("view engine","ejs");
 app.set("views", "./views");
 app.use(express.static('public'));
 
+app.use(express.static('node_modules'));
+
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
 var apiRouter = require('./routes/api');
