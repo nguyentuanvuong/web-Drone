@@ -1,4 +1,4 @@
-
+import * as tf from '@tensorflow/tfjs';
 
 const video = document.getElementById('webcam');
 const results = document.getElementById('results');
