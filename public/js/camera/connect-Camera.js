@@ -1,11 +1,11 @@
 
-
 const video = document.getElementById('webcam');
+const list_camera = document.getElementById('list_camera');
 const results = document.getElementById('results');
 var ctx = results.getContext("2d");
-const weights = 'web_model/model.json';
-var model = undefined;
 
+const weights = 'web_model/model.json';
+const [modelWeight, modelHeight] = [320, 320];
 const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
     'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
     'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
@@ -17,32 +17,25 @@ const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'tra
     'hair drier', 'toothbrush'
 ]
 
-const [modelWeight, modelHeight] = [640, 640];
+var model = undefined;
 
-// $("document").ready(async function() {
-//     model = await tf.loadGraphModel(weights);
-// });
-
-async function loadModel(){
-    console.log('Load model');
-
-    model = await tf.loadGraphModel(weights);
-    console.log(tf.getBackend());
-}
-
-loadModel();
+load(weights);
 
 results.width = video.offsetWidth;
 results.height = video.offsetHeight;
 
-const list_camera = document.getElementById('list_camera');
+async function load(weights){
+    model = await tf.loadGraphModel(weights);
+    tf.setBackend('webgl');
+    console.log(tf.getBackend());
+}
+
 navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
     navigator.mediaDevices.enumerateDevices().then(function (devices) {
         for(var i = 0; i < devices.length; i ++){
             var device = devices[i];
             if (device.kind === 'videoinput') {
                 const item = document.createElement('div');
-                console.log(device.deviceId);
                 item.innerHTML = `
                 <a id = "${device.deviceId}" class="list-group-item list-group-item-action py-3 lh-tight" onclick="enableCam(this.id)">
                     <div class="d-flex w-100 align-items-center justify-content-between">
@@ -57,10 +50,8 @@ navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
     });
 });
 
-
 function enableCam(device){
     if(model){
-        console.log('Run inference');
         var constraints = {
             video: {
                 width: 1920,
@@ -76,8 +67,8 @@ function enableCam(device){
     else console.log('model loading .....');
 }
 
+
 function predictWebcam() {
-    
     const input = tf.tidy(() => {
         return tf.image.resizeBilinear(tf.browser.fromPixels(video), [modelWeight, modelHeight])
             .div(255.0)
@@ -90,8 +81,6 @@ function predictWebcam() {
         ctx.clearRect(0, 0, results.width, results.height);
         ctx.drawImage(video,0,0,ctx.width, ctx.height);
         
-        
-
         const [boxes, scores, classes, valid_detections] = res;
         const boxes_data = boxes.dataSync();
         const scores_data = scores.dataSync();
@@ -121,8 +110,9 @@ function predictWebcam() {
             ctx.lineWidth = 4;
             ctx.fillText(`${klass} ${score}`,x1,y1);
 
-            console.log(klass, score);
+            console.log(klass, score, x1,y1,x2,y2);
         }
     });
     window.requestAnimationFrame(predictWebcam);
 }
+

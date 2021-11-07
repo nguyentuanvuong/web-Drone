@@ -1,9 +1,19 @@
 const path = require('path');
 
+
+
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/test/index.js',
     output: {
-        filename : 'bundle.js', // Tên file đầu ra
-        path : path.resolve(__dirname, 'public') // Nơi chưa file đầu ra
+        filename : 'index.js', 
+        path : path.resolve(__dirname, 'public/js/test') 
+    }
+};
+
+module.exports = {
+    entry: './src/objectDetection/index.js',
+    output: {
+        filename : 'index.js', 
+        path : path.resolve(__dirname, 'public/js/objectDetection') 
     }
 };
