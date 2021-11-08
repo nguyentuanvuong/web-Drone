@@ -1,5 +1,5 @@
-
-const video = document.getElementById('webcam');
+const camera = document.getElementById('view-Cam');
+const video = document.getElementById('video');
 const list_camera = document.getElementById('list_camera');
 const results = document.getElementById('results');
 var ctx = results.getContext("2d");
@@ -21,8 +21,8 @@ var model = undefined;
 
 load(weights);
 
-results.width = video.offsetWidth;
-results.height = video.offsetHeight;
+// results.width = video.offsetWidth;
+// results.height = video.offsetHeight;
 
 async function load(weights){
     model = await tf.loadGraphModel(weights);
@@ -82,9 +82,8 @@ function predictWebcam() {
 }
 
 const drawBox = (res)=>{
-    results.width = video.offsetWidth;
-    results.height = video.offsetHeight;
     ctx.clearRect(0, 0, results.width, results.height);
+    ctx.drawImage(video,0, 0, results.width, results.height);
         
     const [boxes, scores, classes, valid_detections] = res;
     const boxes_data = boxes.dataSync();
