@@ -22,10 +22,22 @@ var model = undefined;
 load(weights);
 
 results.width = camera.offsetWidth;
-results.height = results.width*9/16
+results.height = results.width*9/16;
+
+ctx.font = "30px Arial";
+ctx.fillStyle = "#000000";
+ctx.lineWidth = 4;
+ctx.fillText('MODEL LOADING...',results.width/2,results.height/2);
 
 async function load(weights){
+    
     model = await tf.loadGraphModel(weights);
+    ctx.clearRect(0, 0, results.width, results.height);
+
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "#000000";
+    ctx.lineWidth = 4;
+    ctx.fillText('CAMERA NOT CONNECT',results.width/2,results.height/2);
     tf.setBackend('webgl');
     console.log(tf.getBackend());
 }
@@ -67,17 +79,25 @@ function enableCam(device){
     else console.log('model loading .....');
 }
 
-
 function predictWebcam() {
     const input = tf.tidy(() => {
         return tf.image.resizeBilinear(tf.browser.fromPixels(video), [modelWeight, modelHeight])
             .div(255.0)
             .expandDims(0);
     });
+
+    // const tensor = ()=>{
+    //     return tf.image.resizeBilinear(tf.browser.fromPixels(video), [modelWeight, modelHeight])
+    //         .div(255.0)
+    //         .expandDims(0);
+    // }
+    // const input = tf.tidy(tensor);
+    
     model.executeAsync(input).then(res => {
         drawBox(res);
-        tf.dispose(res);
+        tf.dispose();
     });
+    tf.dispose(input);
     window.requestAnimationFrame(predictWebcam);
 }
 
