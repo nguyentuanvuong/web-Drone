@@ -21,8 +21,8 @@ var model = undefined;
 
 load(weights);
 
-// results.width = video.offsetWidth;
-// results.height = video.offsetHeight;
+results.width = camera.offsetWidth;
+results.height = results.width*9/16
 
 async function load(weights){
     model = await tf.loadGraphModel(weights);
@@ -82,6 +82,8 @@ function predictWebcam() {
 }
 
 const drawBox = (res)=>{
+    results.width = camera.offsetWidth;
+    results.height = results.width*9/16
     ctx.clearRect(0, 0, results.width, results.height);
     ctx.drawImage(video,0, 0, results.width, results.height);
         
