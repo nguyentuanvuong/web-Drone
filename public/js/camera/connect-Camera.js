@@ -25,10 +25,10 @@ var model = undefined;
 
 load(weights);
 
-// results.width = 320;
+results.width = 320;
 
-results.width = camera.offsetWidth;
-// results.height = results.width*9/16;
+// results.width = camera.offsetWidth;
+results.height = results.width*9/16;
 
 ctx.font = "20px Arial";
 ctx.fillStyle = "#000000";
@@ -103,8 +103,8 @@ function predictWebcam() {
 }
 
 const drawBox = (res)=>{
-    // results.width = 320;
-    results.width = camera.offsetWidth;
+    results.width = 320;
+    // results.width = camera.offsetWidth;
     results.height = results.width*9/16
     ctx.clearRect(0, 0, results.width, results.height);
     ctx.drawImage(video,0, 0, results.width, results.height);

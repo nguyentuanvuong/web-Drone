@@ -1,24 +1,3 @@
-# YOLOv5 🚀 by Ultralytics, GPL-3.0 license
-"""
-Export a YOLOv5 PyTorch model to TorchScript, ONNX, CoreML, TensorFlow (saved_model, pb, TFLite, TF.js,) formats
-TensorFlow exports authored by https://github.com/zldrobit
-
-Usage:
-    $ python path/to/export.py --weights yolov5s.pt --include torchscript onnx coreml saved_model pb tflite tfjs
-
-Inference:
-    $ python path/to/detect.py --weights yolov5s.pt
-                                         yolov5s.onnx  (must export with --dynamic)
-                                         yolov5s_saved_model
-                                         yolov5s.pb
-                                         yolov5s.tflite
-
-TensorFlow.js:
-    $ cd .. && git clone https://github.com/zldrobit/tfjs-yolov5-example.git && cd tfjs-yolov5-example
-    $ npm install
-    $ ln -s ../../yolov5/yolov5s_web_model public/yolov5s_web_model
-    $ npm start
-"""
 
 import argparse
 import os
