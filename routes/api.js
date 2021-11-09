@@ -1,30 +1,36 @@
 const express = require('express');
-var router = express.Router();
-var mysql = require('mysql')
-var fs = require('fs');
+const router = express.Router();
+const fs = require('fs');
+const formidable = require('formidable');
 
-var db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'detect_covid19'
-  })
-  
-// db.connect();
 
-router.get('/camera',(req,res)=>{
-    db.query('SELECT * FROM `camera`',(error, results, fields)=>{
-      res.send(results);
-    });
-  });
+router.post('/update/dataset',(req,res)=>{
 
-router.get('/:path/:file', function(req, res, next) {
-  var path = './data/'+req.params.path+'/'+req.params.file;
-  var fd = fs.readFileSync(path,function(err){
-    if(err) res.send(err);
-  });
-  var data = JSON.parse(fd);
-  res.json(data);
+  res.send('req');
 });
+
+
+
+
+
+
+
+
+
+
+// http://localhost:8000/api/test?firstname=Tuan&lastname=Vuong
+router.get('/test',(req,res)=>{
+  const spawn = require('child_process').spawn;
+  var process = spawn('python', [
+    './train/test.py',
+    req.query.firstname,
+    req.query.lastname
+  ]);
+  process.stdout.on('data', function(data) {
+    console.log(data.toString());
+    res.send(data.toString());
+  });
+});
+
 
 module.exports = router;

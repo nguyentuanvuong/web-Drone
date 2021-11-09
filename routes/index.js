@@ -7,6 +7,10 @@ router.get('/',(req,res)=>{
 router.get('/connect-camera',(req,res)=>{
   res.render('camera');
     });
+
+router.get('/training',(req,res)=>{
+  res.render('training');
+});
 router.get('/ALlCam',(req,res)=>{
     res.render('ALlCam');
   });
