@@ -6,25 +6,64 @@
     <%- include('./layout/header'); %>
   </head>
   <body>
-    <div id="camera" style="margin-top: 60px;">
-      <div id="listCamera">
-
-      </div>
-      <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-      <script type="text/javascript" src="js/camera/listCamera.js"></script>
-      <img id="obs">
-      <script type="text/javascript" src="/js/camera/viewCamera.js"></script>
-    </div>
-    <span id="log"></span>
-    <script>
-      // socket.on('listSocket', (msg) => {
-      //   console.log(msg)
-      //     // const item = document.getElementById('log');
-      //     // item.textContent = msg;
-      //   });
-    </script>
-    
+    <div id="all_cam">
+    </div>   
   </body>
+  <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+  <!-- <script>
+    peer = new Peer(null, {
+        debug: 2
+    });
+
+    peer.on('open', function (id) {
+        // Workaround for peer.reconnect deleting previous id
+        if (peer.id === null) {
+            console.log('Received null id from peer open');
+            peer.id = lastPeerId;
+        } else {
+            lastPeerId = peer.id;
+        }
+        console.log('ID: ' + peer.id);
+    });
+  </script> -->
+
+  <script>
+    const all = document.getElementById('all_cam');
+    const socket = io();
+    
+    socket.on("connect", () => {
+      socket.on(socket.id,(msg)=>{
+        msg.forEach(element => {
+          const item = document.createElement('img');
+          item.id = element;
+          item.width = 320;
+          item.src = 'img/nocam/noCamera.jpg'
+          all.append(item);
+        });
+      });
+      
+      socket.on('connect Socket',(msg)=>{
+        const item = document.createElement('img');
+        item.id = msg;
+        item.width = 320;
+        item.src = 'img/nocam/noCamera.jpg'
+        all.append(item);
+      });
+
+      socket.on('disconnect Socket',(msg)=>{
+        const item = document.getElementById(msg)
+        all.removeChild(item);
+      });
+
+      socket.on('AllCam',(msg)=>{
+        const id = document.getElementById(msg.socketID);
+        id.src = msg.img;
+      });
+
+  });
+  </script>
   <footer>
     <%- include('./layout/footer');%>
   </footer>

@@ -18,8 +18,8 @@ const { Server } = require("socket.io");
 const sio = new Server(httpsServer);
 const io = new Server(httpServer);
 
-var count = 0
-var listSocket = []
+var listSocket = [];
+var count;
 
 app.set("view engine","ejs");
 app.set("views", "./views");
@@ -35,37 +35,27 @@ app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
 
 sio.on('connection', (socket) => {
-  console.log(socket.id,' connect');
-  listSocket[count] = socket.id;
-  // count++;
-  socket.emit('listSocket', listSocket);
+  count = sio.engine.clientsCount;
+  listSocket.push(socket.id);
+  console.log('Socket number online',count);
+  sio.emit(socket.id,listSocket);
 
+  socket.broadcast.emit('connect Socket', socket.id);
   socket.on('StreamID', msg=>{
-    sio.emit(msg.socketID,msg);
-    io.emit('StreamColab',msg);
+    socket.broadcast.emit('AllCam',msg);
   }); 
   socket.on('disconnect', () => {
-    console.log(socket.id,' disconnected');
+    count = sio.engine.clientsCount;
+    console.log('Socket number online',count);
+    listSocket = listSocket.filter((element)=>{
+      return element !== socket.id;
+    });
+    sio.emit('disconnect Socket', socket.id);
   });
 });
 
 io.on('connection', (socket) => {
-  console.log(socket.id,' connect');
 
-  socket.on('StreamID', msg=>{
-    // sio.emit(msg.socketID,msg);
-    io.emit('StreamColab',msg);
-  });
-
-  socket.on('ResultsColab',msg=>{
-    msg = JSON.parse(msg);
-    sio.emit(`ResultsID${msg.socketID}`,msg);
-    io.emit(`ResultsID${msg.socketID}`,msg);
-  });
-
-  socket.on('disconnect', () => {
-    console.log(socket.id,' disconnected');
-  });
 });
 
 httpServer.listen(process.env.HTTP_PORT, () => {

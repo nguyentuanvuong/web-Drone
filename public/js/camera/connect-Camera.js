@@ -1,8 +1,12 @@
+// const { io } = require("socket.io-client");
+
 const camera = document.getElementById('view-Cam');
 const video = document.getElementById('video');
 const list_camera = document.getElementById('list_camera');
 const results = document.getElementById('results');
 var ctx = results.getContext("2d");
+const socket = io()
+var peer = new Peer(); 
 
 const weights = 'web_model/model.json';
 const [modelWeight, modelHeight] = [320, 320];
@@ -21,10 +25,12 @@ var model = undefined;
 
 load(weights);
 
-results.width = camera.offsetWidth;
-results.height = results.width*9/16;
+// results.width = 320;
 
-ctx.font = "30px Arial";
+results.width = camera.offsetWidth;
+// results.height = results.width*9/16;
+
+ctx.font = "20px Arial";
 ctx.fillStyle = "#000000";
 ctx.lineWidth = 4;
 ctx.fillText('MODEL LOADING...',results.width/2,results.height/2);
@@ -34,33 +40,35 @@ async function load(weights){
     model = await tf.loadGraphModel(weights);
     ctx.clearRect(0, 0, results.width, results.height);
 
-    ctx.font = "30px Arial";
+    ctx.font = "20px Arial";
     ctx.fillStyle = "#000000";
     ctx.lineWidth = 4;
     ctx.fillText('CAMERA NOT CONNECT',results.width/2,results.height/2);
     tf.setBackend('webgl');
-    console.log(tf.getBackend());
+    listCamera();
 }
 
-navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
-    navigator.mediaDevices.enumerateDevices().then(function (devices) {
-        for(var i = 0; i < devices.length; i ++){
-            var device = devices[i];
-            if (device.kind === 'videoinput') {
-                const item = document.createElement('div');
-                item.innerHTML = `
-                <a id = "${device.deviceId}" class="list-group-item list-group-item-action py-3 lh-tight" onclick="enableCam(this.id)">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                    <strong class="mb-1">${device.label}</strong>
-                    </div>
-                <div class="col-10 mb-1 small " style = "overflow: hidden" >${device.deviceId}</div>
-                </a>
-                `;
-                list_camera.appendChild(item);
-            }
-        };
+function listCamera(){
+    navigator.mediaDevices.getUserMedia({  video: true }).then(function(){
+        navigator.mediaDevices.enumerateDevices().then(function (devices) {
+            for(var i = 0; i < devices.length; i ++){
+                var device = devices[i];
+                if (device.kind === 'videoinput') {
+                    const item = document.createElement('div');
+                    item.innerHTML = `
+                    <a id = "${device.deviceId}" class="list-group-item list-group-item-action py-3 lh-tight" onclick="enableCam(this.id)">
+                        <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">${device.label}</strong>
+                        </div>
+                    <div class="col-10 mb-1 small " style = "overflow: hidden" >${device.deviceId}</div>
+                    </a>
+                    `;
+                    list_camera.appendChild(item);
+                }
+            };
+        });
     });
-});
+}
 
 function enableCam(device){
     if(model){
@@ -85,13 +93,6 @@ function predictWebcam() {
             .div(255.0)
             .expandDims(0);
     });
-
-    // const tensor = ()=>{
-    //     return tf.image.resizeBilinear(tf.browser.fromPixels(video), [modelWeight, modelHeight])
-    //         .div(255.0)
-    //         .expandDims(0);
-    // }
-    // const input = tf.tidy(tensor);
     
     model.executeAsync(input).then(res => {
         drawBox(res);
@@ -102,6 +103,7 @@ function predictWebcam() {
 }
 
 const drawBox = (res)=>{
+    // results.width = 320;
     results.width = camera.offsetWidth;
     results.height = results.width*9/16
     ctx.clearRect(0, 0, results.width, results.height);
@@ -132,9 +134,76 @@ const drawBox = (res)=>{
         ctx.fillStyle = "#00FFFF";
         ctx.lineWidth = 4;
         ctx.fillText(`${klass} ${score}`,x1,y1);
-
         console.log(klass, score, x1,y1,x2,y2);
-
     }
+    // sendImg();
 }
 
+// peer = new Peer(null, {
+//     debug: 2
+// });
+
+// peer.on('open', function (id) {
+//     // Workaround for peer.reconnect deleting previous id
+//     if (peer.id === null) {
+//         console.log('Received null id from peer open');
+//         peer.id = lastPeerId;
+//     } else {
+//         lastPeerId = peer.id;
+//     }
+
+//     console.log('ID: ' + peer.id);
+
+// });
+
+// peer.on('connection', function (c) {
+//     // Allow only a single connection
+//     if (conn && conn.open) {
+//         c.on('open', function() {
+//             c.send("Already connected to another client");
+//             setTimeout(function() { c.close(); }, 500);
+//         });
+//         return;
+//     }
+
+//     conn = c;
+//     console.log("Connected to: " + conn.peer);
+//     ready();
+// });
+
+
+// function ready() {
+//     conn.on('data', function (data) {
+//         console.log("Data recieved");
+//         var cueString = "<span class=\"cueMsg\">Cue: </span>";
+//         switch (data) {
+//             case 'Go':
+//                 go();
+//                 addMessage(cueString + data);
+//                 break;
+//             case 'Fade':
+//                 fade();
+//                 addMessage(cueString + data);
+//                 break;
+//             case 'Off':
+//                 off();
+//                 addMessage(cueString + data);
+//                 break;
+//             case 'Reset':
+//                 reset();
+//                 addMessage(cueString + data);
+//                 break;
+//             default:
+//                 addMessage("<span class=\"peerMsg\">Peer: </span>" + data);
+//                 break;
+//         };
+//     });
+//     conn.on('close', function () {
+//         conn = null;
+//     });
+// }
+
+function sendImg(){
+    var imgString = results.toDataURL();
+    socket.emit('StreamID',{"socketID":socket.id, "img": imgString});
+}
