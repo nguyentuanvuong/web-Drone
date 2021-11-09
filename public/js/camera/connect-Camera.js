@@ -136,7 +136,7 @@ const drawBox = (res)=>{
         ctx.fillText(`${klass} ${score}`,x1,y1);
         console.log(klass, score, x1,y1,x2,y2);
     }
-    // sendImg();
+    sendImg();
 }
 
 // peer = new Peer(null, {
