@@ -1,0 +1,35 @@
+# Setup
+## Environment
+```
+python -m venv --system-site-packages .\venv
+or 
+py -m venv --system-site-packages .\venv
+```
+## Activate environment
+```
+.\venv\Scripts\activate
+pip install --upgrade pip
+```
+## Exit the virtual environment
+```
+deactivate
+```
+
+## Install
+```
+pip install -qr requirements.txt
+pip list
+```
+# Train
+```
+python train.py --img 640 --batch 16 --epochs 3 --data coco128.yaml --weights yolov5s.pt --cache
+```
+# Test
+# Export
+```
+python export.py --weights yolov5s.pt 
+```
+
+```
+tensorflowjs_wizard
+```

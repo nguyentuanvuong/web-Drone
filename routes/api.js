@@ -22,9 +22,7 @@ router.post('/update/dataset',(req,res)=>{
 router.get('/test',(req,res)=>{
   const spawn = require('child_process').spawn;
   var process = spawn('python', [
-    './train/test.py',
-    req.query.firstname,
-    req.query.lastname
+    './train/detect.py'
   ]);
   process.stdout.on('data', function(data) {
     console.log(data.toString());
