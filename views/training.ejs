@@ -6,10 +6,12 @@
     <%- include('./layout/header'); %>
   </head>
   <body>
-    <form action="api/update/dataset" method="post">
-        <input type="file" name="" id="">
-        <input type="submit" value="">
+    <div class="text-center">
+      <form action="api//update/dataset" method="post" enctype="multipart/form-data">
+        <input type="file" name="dataset" id="">
+        <input type="submit" value="UpLoad">
     </form>
+    </div>
   </body>
   <footer>
     <%- include('./layout/footer');%>

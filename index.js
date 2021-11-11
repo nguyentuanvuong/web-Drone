@@ -19,6 +19,7 @@ const sio = new Server(httpsServer);
 const io = new Server(httpServer);
 
 var listSocket = [];
+var listPeerId = [];
 var count;
 
 app.set("view engine","ejs");
@@ -43,6 +44,13 @@ sio.on('connection', (socket) => {
   socket.on('StreamID', msg=>{
     socket.broadcast.emit('AllCam',msg);
   }); 
+
+  socket.on('PeerId',(msg)=>{
+    listPeerId.push(msg);
+    socket.broadcast.emit('PeerId', msg);
+  });
+
+
   socket.on('disconnect', () => {
     count = sio.engine.clientsCount;
     console.log('Socket number online',count);
@@ -54,7 +62,10 @@ sio.on('connection', (socket) => {
 });
 
 io.on('connection', (socket) => {
-
+    console.log('connect',socket.id);
+    socket.on('disconnect', () => {
+        console.log('disconnect Socket', socket.id);
+    });
 });
 
 httpServer.listen(process.env.HTTP_PORT, () => {

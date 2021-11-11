@@ -1,25 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-const formidable = require('formidable');
+const path = require('path');
+const multer = require('multer');
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'uploads/')
+  },
+  filename: (req, file, cb) => {
+      const { originalname } = file;
+      cb(null, originalname);
+  }
+})
+const upload = multer({ dest: 'uploads/' }); // or simply { dest: 'uploads/' }
 
-router.post('/update/dataset',(req,res)=>{
-
-  res.send('req');
+router.post('/update/dataset', upload.single('dataset'),(req,res)=>{
+  return res.json({ status: 'OK', uploaded: req.files.length });
 });
-
-// http://localhost:8000/api/test?firstname=Tuan&lastname=Vuong
-router.get('/test',(req,res)=>{
-  const spawn = require('child_process').spawn;
-  var process = spawn('python', [
-    './train/detect.py'
-  ]);
-  process.stdout.on('data', function(data) {
-    console.log(data.toString());
-    res.send(data.toString());
-  });
-});
-
 
 module.exports = router;
