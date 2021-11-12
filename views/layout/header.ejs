@@ -1,32 +1,39 @@
+<style>
+  .active {
+    font-weight: 550 !important;
+  }
+</style>
 
 <nav class="navbar navbar-expand-lg navbar-dark mb-1 position-fixed fixed-top" style="background-color: #929fba">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">DRONE COVID</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 test-name test-name">
+      <ul class="nav navbar-nav me-auto mb-2 mb-lg-0 test-name test-name duy" id="nav">
         <!-- <li class="nav-item active">
           <a class="nav-link" href="/">Home</a>
         </li> -->
-        <li class="nav-item">
-          <a class="nav-link" href="/connect-camera">Connect camera</a>
+        <li class="nav-item ">
+          <a class="nav-link " href="/connect-camera">Connect camera</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/training">Training</a>
+          <a class="nav-link " href="/Training">Training</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/ALlCam">All camera</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/Mission">Mission controls</a>
+        <li class="nav-item ">
+          <a class="nav-link " href="/Mission">Mission controls</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/lora-map">Map Lora</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
             Dropdown
           </a>
           <ul class="dropdown-menu dropdown-menu-ligth" aria-labelledby="navbarDropdown">
@@ -43,7 +50,14 @@
     </div>
   </div>
   <script>
-    const url = location.pathname;
-    // const active = document.querySelector();
+    window.addEventListener('load', function () {
+
+      $("#nav >li>a[href='" + location.pathname + "']").closest('a').addClass("active").each(function () {
+
+        $("#nav >li>a[href='" + $(this).attr("href") + "']").closest('a').addClass("active")
+
+      });
+
+    })
   </script>
 </nav>
