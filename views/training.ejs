@@ -10,15 +10,27 @@
 
 <body>
   <div class="text-center">
-    <form action="api//update/dataset" method="post" enctype="multipart/form-data">
-      <input type="file" name="dataset" id="">
+    <form action="api/update-dataset" method="post" enctype="multipart/form-data">
+      <input type="file" name="dataset" id="" accept=".zip">
       <input type="submit" value="UpLoad">
     </form>
   </div>
 
 
-  <script src="js/mission/jquery-1.11.2.min.js"></script>
+
 </body>
+<script>
+  fetch('/api/list-file', {mode: 'cors'})
+  .then(function(response) {
+    return response.text();
+  })
+  .then(function(text) {
+    console.log('Request successful', text);
+  })
+  .catch(function(error) {
+    log('Request failed', error)
+  });
+</script>
 <footer>
   <%- include('./layout/footer');%>
 </footer>

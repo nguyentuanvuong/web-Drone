@@ -3,5 +3,7 @@ package-lock.json
 dataset
 train
 img
+uploads
+
 
 .vscode
