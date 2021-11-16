@@ -20,17 +20,16 @@ const [modelWeight, modelHeight] = [320, 320];
 //     'hair drier', 'toothbrush'
 // ]
 
-const names = ['person']
+const names = ['fire']
 
 var model = undefined;
 
 load(weights);
 
 async function load(weights){
-    
     model = await tf.loadGraphModel(weights);
     ctx.clearRect(0, 0, results.width, results.height);
-    tf.setBackend('webgl');
+    // tf.setBackend('webgl');
     list_camera.style.display = '';
 }
 
