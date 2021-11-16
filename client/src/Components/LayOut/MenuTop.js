@@ -4,9 +4,9 @@ class MenuTop extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar navbar-expand-lg navbar-dark mb-1 position-fixed fixed-top" style={{backgroundColor: '#929fba'}}>
+                <nav className="navbar navbar-expand-lg navbar-dark mb-1 position-fixed fixed-top" style={{backgroundColor: '#55B3D9'}}>
                 <div className="container-fluid">
-                    <a className="navbar-brand" href="/">DRONE COVID</a>
+                    <a className="navbar-brand" href="/">FIRE PROTECTION SYSTEM</a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon" />
                     </button>
@@ -43,7 +43,7 @@ class MenuTop extends Component {
                     </ul>
                     <form className="d-flex">
                         <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                        <button className="btn btn-outline-info" type="submit">Search</button>
+                        <button className="btn btn-outline-primary" type="submit">Search</button>
                     </form>
                     </div>
                 </div>
