@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-  <title>Connect Camera</title>
-  <%- include('./layout/head'); %>
-    <%- include('./layout/header'); %>
-</head>
-
-<body>
-  <!-- <div class="row">
-    <div id="list_camera" class="col-3 scrollarea"></div>
-    <div id="view-Cam" class="col-9" >
-      <video id="video" style="display: none;" autoplay > </video>
-      <canvas id="results" ></canvas>
-    </div>
-  </div> -->
-
-  <div class="row">
-    <div id="list_camera" style="display: none;" class=" scrollarea col-4"></div>
-    <div id="view-Cam" class="col-7">
-      <video id="video" style="display: none;" autoplay> </video>
-      <canvas id="results" style="display: none;"></canvas>
-    </div>
-  </div>
-</body>
-<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/3.11.0/tf.min.js"
-  integrity="sha512-ufFDHpWUqU90/5cbhnHp5ZWTtyiYNWqBNn/E5/jDEka1BBA4N74U8/bZn3HP1Ny1Ku4hcs+feHv4KTdb6GbBMA=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="js/camera/connect-Camera.js"></script>
-<footer>
-  <%- include('./layout/footer');%>
-</footer>
-
+    <head>
+        <title>Connect Camera</title>
+        <%- include('./layout/head'); %>
+        <%- include('./layout/header'); %>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div id="list_camera" style="display: none;" class="col-3">
+                    <!-- <button onclick="enableTest()">test video</button> -->
+                </div>
+                <div class="col-9">
+                    <div id="view-Cam">
+                        <canvas id="results" style="display: none;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/3.11.0/tf.min.js"
+        integrity="sha512-ufFDHpWUqU90/5cbhnHp5ZWTtyiYNWqBNn/E5/jDEka1BBA4N74U8/bZn3HP1Ny1Ku4hcs+feHv4KTdb6GbBMA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/connect-Camera.js"></script>
+    <footer>
+        <%- include('./layout/footer');%>
+    </footer>
 </html>

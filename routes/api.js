@@ -21,17 +21,25 @@ const upload = multer({
     storage
 });
 
-const dir = './';
 
 router.post('/update-dataset', upload.single('dataset'), (req, res) => {
     res.json(req.file);
 });
 
 router.get('/list-file',(req, res)=>{
-    const files = fs.readdirSync(dir);
+    const files = fs.readdirSync('./public/dataset');
     res.json(files);
     
 });
+
+router.get('/:path/:file', function(req, res, next) {
+    var path = './data/'+req.params.path+'/'+req.params.file;
+    var fd = fs.readFileSync(path,function(err){
+      if(err) res.send(err);
+    });
+    var data = JSON.parse(fd);
+    res.json(data);
+  });
 
 function makeid(length) {
     var result = '';

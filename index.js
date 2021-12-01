@@ -23,19 +23,21 @@ const io = new Server(httpServer);
 var listSocket = [];
 var listPeerId = [];
 var count;
-var trainStartus = true;
+var trainStartus = false;
 
 app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(express.static('public'));
 
-var indexRouter = require('./routes/index');
-var adminRouter = require('./routes/admin');
-var apiRouter = require('./routes/api');
+const indexRouter = require('./routes/index');
+const adminRouter = require('./routes/admin');
+const apiRouter = require('./routes/api');
+const neuralRouter = require('./routes/neural');
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
+app.use('/neural', neuralRouter);
 
 sio.on('connection', (socket) => {
     count = sio.engine.clientsCount;
@@ -65,12 +67,17 @@ sio.on('connection', (socket) => {
 
 io.on('connection', (socket) => {
     socket.on('trainStartus',(msg)=>{
+        socket.broadcast.emit('dataset','');
         io.emit('trainStartus',trainStartus);
+    });
+    socket.on('dataset',(msg)=>{
+        socket.broadcast.emit('dataset',msg);
     });
     socket.on('training',(msg)=>{
         if(!trainStartus) {
             socket.broadcast.emit('training',msg);
         }
+        
     });
     socket.on('TrainingDone',(msg)=>{
         trainStartus = false;
@@ -79,6 +86,9 @@ io.on('connection', (socket) => {
     socket.on('TrainingStart',(msg)=>{
         trainStartus = true;
         socket.broadcast.emit('trainStartus',trainStartus);
+    });
+    socket.on('CreateTrainingFile',(msg)=>{
+        socket.broadcast.emit('CreateTrainingFile',msg);
     });
 
     console.log('connect', socket.id);
