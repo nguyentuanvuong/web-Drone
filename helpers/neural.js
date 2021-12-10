@@ -13,11 +13,12 @@ const TRAIN_DATA_PATH = path.resolve("./public/neural/uploads");
  * @param { String } file_name :String path to csv_file
  * @param { [ String ]} feature_header :The header of feature that used for training
  * @param {String or Number } output_header : Header csv that was the output user for training data
- */
+*/
 var data_ketqua_sgd=null;
 var data_ketqua_adam=null;
 var array=[];
 var arraydatatest=[];
+var arraydatatest_y=[];
 async function trainingData(
   file_name,
   feature_header,
@@ -48,7 +49,7 @@ async function trainingData(
     const x_train = csv_transform.map(ele => ele.xs);
     const y_train = csv_transform.map(ele => ele.ys);
     arraydatatest=x_train;
-  
+    arraydatatest_y=y_train;
  
     const xs = tf.tensor2d(x_train, [x_train.length, Number(feature_count)]);
     // onehot encoding : [0,1,2,3] giving 1 => [0,1,0,0];
@@ -126,44 +127,39 @@ async function trainModel(
   model.summary();
   // compiling model
   model.compile({
-    loss: tf.losses.meanSquaredError,
-    optimizer: tf.train.adam(learningRate),
-    metrics: ["acc"]
+    optimizer: "adam",
+    loss: "meanSquaredError",
+    metrics: ["accuracy"]
   });
 
 
-  console.log(`train finish data_training SGD`);
 
-  var data_ketqua_acc_sgd=null;
-  console.log(data_ketqua_acc_sgd);
-
-
-
-  const info2 = await model.fit(xs, ys, {
+  const info = await model.fit(xs, ys, {
     epochs: epochs,
     batchSize: batchSize,
     evaluate:{xs,ys}
    
   });
-  console.log(`train finish data_training ADAM`);
+  console.log(`train finish data_training`);
 
   var data_ketqua_acc_adam=null;
-  console.log(data_ketqua_acc_adam);
-  data_ketqua_sgd=data_ketqua_acc_sgd;
+
+
+
   data_ketqua_adam=data_ketqua_acc_adam;
+  // console.log(model);
+ 
 
-  console.log(info2);
-
-  
-   
-   console.log(xs);
-
-  return info2;
+  return info;
 
 }
 function datatest() {
   var data_test=arraydatatest;
   return data_test;
+}
+function datatest_y() {
+  var data_test_y=arraydatatest_y;
+  return data_test_y;
 }
 function roc() {
   var ketqua_roc=array;
@@ -195,22 +191,16 @@ function predictSample(sample, model) {
 
 async function run() {
   const { xs, ys } = await trainingData(
-    "IOT.csv",
-    ["indoor", "outdoor"],
-    "fan",
-    5,
-    2
+    6,
+    6
   );
   xs.print();
   ys.print();
 
-  const model = configModel(5, 2, 100);
+  const model = configModel(6, 6, 100);
   const info = await trainModel(model, xs, ys);
-  console.log(`model info ${JSON.stringify(info)}`);
+  // console.log(`model info ${JSON.stringify(info)}`);
 
-  // const result = predictSample(arrayhihi[3], model);
-  console.log("result");
-  console.log(result);
 }
 // run();
 
@@ -222,5 +212,6 @@ module.exports = {router,
   ketqua_acc_sgd,
   ketqua_acc_adam,
   roc,
-  datatest
+  datatest,
+  datatest_y
 };

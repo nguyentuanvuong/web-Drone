@@ -78,7 +78,7 @@ function enableCam(device) {
             videoView.addEventListener('loadeddata', predictWebcam);
         });
         clearInterval(myVar);
-        setInterval(sendImg, 2000);
+        setInterval(sendImg, 5000);
     }
     else console.log('model loading .....');
 }
