@@ -13,19 +13,17 @@
         <div class=" row border rounded">
             <div class="container">
                 <h4 class="text-center m-4" style="font-family: Arial, Helvetica, sans-serif;">UPLOAD DATA SET</h4>
-                <form action="" method="post">
+                <form id="form_upload" action="/api/update-dataset" method="post" enctype="multipart/form-data">
                     <div class="d-flex">
                         <label class="form-label m-2" for="">DataSet</label>
-                        <input class="form-control m-1" type="file" name="" id="">
-                        <!-- <label class="form-label m-2" for="">Image</label>
-                        <input class="form-control m-1" type="file" name="" id=""> -->
+                        <input class="form-control m-1" type="file" name="dataset" id="" accept=".zip">
                         <input class="btn btn-primary m-1" type="submit" name="" id="" value="Upload">
                     </div>
                 </form>
             </div>
             <div class="container">
                 <h4 class="text-center m-4" style="font-family: Arial, Helvetica, sans-serif;">CREATE FILE TRAINING</h4>
-                <form id="form_upload" action="" method="post">
+                <form id="form_create_dataset" action="" method="post">
                     <div class="">
                         <div class="row">
                             <div class="col-3">

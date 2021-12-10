@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/')
+        cb(null, 'public/datasets')
     },
     filename: (req, file, cb) => {
         if (file.mimetype.split("/")[1] == 'x-zip-compressed') {
@@ -18,16 +18,17 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({
-    storage
+    storage: storage
 });
 
 
 router.post('/update-dataset', upload.single('dataset'), (req, res) => {
+    console.log(req.file);
     res.json(req.file);
 });
 
 router.get('/list-file',(req, res)=>{
-    const files = fs.readdirSync('./public/dataset');
+    const files = fs.readdirSync('./public/datasets');
     res.json(files);
     
 });

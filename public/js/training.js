@@ -4,9 +4,11 @@ const formTrain = document.getElementById('form_Train');
 const formUpload = document.getElementById('form_upload');
 const listFile = document.getElementById('list-file');
 const listData = document.getElementById('list-dataset');
+const formcreatedataset = document.getElementById('form_create_dataset');
 
 formTrain.addEventListener("submit", training);
-formUpload.addEventListener("submit", create);
+formUpload.addEventListener("submit", uploadData);
+formcreatedataset.addEventListener("submit", create);
 
 getData();
 
@@ -37,6 +39,16 @@ socket.on('connect', () => {
     });
 });
 
+async function uploadData(event){
+    event.preventDefault();
+    const form = event.currentTarget;
+    const url = form.action;
+    const method = form.method;
+    const formData = new FormData(form);
+    postAPI(url,method, formData);
+    getData();
+}
+
 async function create(event) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -60,16 +72,10 @@ async function training(event) {
     // const responseData = await postAPI({ url, formData });
 }
 
-async function postAPI({ url, formData }) {
-    const plainFormData = Object.fromEntries(formData.entries());
-    const formDataJsonString = JSON.stringify(plainFormData);
+async function postAPI( url,method, formData ) {
     const fetchOptions = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        },
-        body: formDataJsonString
+        method: method,
+        body: formData
     };
 
     const response = await fetch(url, fetchOptions);
@@ -81,6 +87,7 @@ async function postAPI({ url, formData }) {
 }
 
 async function getData() {
+    listFile.innerHTML = '';
     fetch('api/list-file')
         .then(response => response.json())
         .then(dt => {
