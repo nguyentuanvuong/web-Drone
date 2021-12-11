@@ -10,7 +10,8 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         if (file.mimetype.split("/")[1] == 'x-zip-compressed') {
-            cb(null, `${makeid(50)}.zip`);
+            cb(null, file.originalname + '-' + Date.now()+ '.zip');
+            // cb(null, `${makeid(50)}.zip`);
         } else {
             cb(new Error("Not a zip File!!"), false);
         }
@@ -23,7 +24,6 @@ const upload = multer({
 
 
 router.post('/update-dataset', upload.single('dataset'), (req, res) => {
-    console.log(req.file);
     res.json(req.file);
 });
 
@@ -42,15 +42,15 @@ router.get('/:path/:file', function(req, res, next) {
     res.json(data);
   });
 
-function makeid(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() *
-            charactersLength));
-    }
-    return result;
-}
+// function makeid(length) {
+//     var result = '';
+//     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//     var charactersLength = characters.length;
+//     for (var i = 0; i < length; i++) {
+//         result += characters.charAt(Math.floor(Math.random() *
+//             charactersLength));
+//     }
+//     return result;
+// }
 
 module.exports = router;

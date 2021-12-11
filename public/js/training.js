@@ -45,8 +45,8 @@ async function uploadData(event){
     const url = form.action;
     const method = form.method;
     const formData = new FormData(form);
-    postAPI(url,method, formData);
-    getData();
+    await postAPI(url,method, formData);
+    await getData();
 }
 
 async function create(event) {

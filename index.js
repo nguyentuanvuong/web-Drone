@@ -30,12 +30,16 @@ var trainStartus = false;
 app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(express.static('public'));
+app.use(cors());  
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 const apiRouter = require('./routes/api');
 
-app.use(cors());
+
+
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
@@ -72,7 +76,7 @@ app.use("/", require("./routes/fileRoutes"));
 io.on('connection', (socket) => {
     count = io.engine.clientsCount;
     listSocket.push(socket.id);
-    console.log('Socket number online', count);
+    // console.log('Socket number online', count);
     io.emit(socket.id, listSocket);
     socket.broadcast.emit('connect Socket', socket.id);
 
@@ -104,10 +108,10 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('CreateTrainingFile',msg);
     });
 
-    console.log('connect', socket.id);
+    // console.log('connect', socket.id);
     socket.on('disconnect', () => {
         count = io.engine.clientsCount;
-        console.log('Socket number online', count);
+        // console.log('Socket number online', count);
         listSocket = listSocket.filter((element) => {
             return element !== socket.id;
         });
@@ -125,6 +129,10 @@ httpServer.listen(process.env.HTTP_PORT, () => {
 // });
 
 (async function() {
-    const url = await ngrok.connect(process.env.HTTP_PORT);
+    // const url = await ngrok.connect(process.env.HTTP_PORT);
+    const url = await ngrok.connect({
+        addr: process.env.HTTP_PORT,
+        authtoken: process.env.NGROK_TOKEN
+    });
     console.log(url);
   })();

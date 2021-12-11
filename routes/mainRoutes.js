@@ -1,4 +1,5 @@
-const router = require("express").Router();
+const express = require('express');
+const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 const tf = require("@tensorflow/tfjs");
@@ -8,7 +9,7 @@ const {
   configModel,
   trainingData,
   trainModel,
-  predictSample,
+  // predictSample,
   ketqua_acc_sgd,
   ketqua_acc_adam,
   roc,
@@ -127,25 +128,25 @@ router.post("/neural/train_model", async (req, res, next) => {
     // console.log(result);
     // console.log(result[0][1]);
   //   var code=[];
-  var vitri=0 
-  for(i=0;i<1000;i++){
-        const result = predictSample(data_test[i], model);
-        var array_result=[(result[0][1]*100).toFixed(3),
-                          (result[0][2]*100).toFixed(3),
-                          (result[0][3]*100).toFixed(3),
-                          (result[0][4]*100).toFixed(3),
-                          (result[0][5]*100).toFixed(3),
-                          (result[0][6]*100).toFixed(3)]
-        var max = Math.max.apply(Math, array_result);                  
-        for( j = 0; j < 6; j++){
-          if(array_result[j] == max){
-              vitri = j+1;
+  // var vitri=0 
+  // for(i=0;i<1000;i++){
+  //       const result = predictSample(data_test[i], model);
+  //       var array_result=[(result[0][1]*100).toFixed(3),
+  //                         (result[0][2]*100).toFixed(3),
+  //                         (result[0][3]*100).toFixed(3),
+  //                         (result[0][4]*100).toFixed(3),
+  //                         (result[0][5]*100).toFixed(3),
+  //                         (result[0][6]*100).toFixed(3)]
+  //       var max = Math.max.apply(Math, array_result);                  
+  //       for( j = 0; j < 6; j++){
+  //         if(array_result[j] == max){
+  //             vitri = j+1;
               
-          }         
-        }
-        console.log(vitri)  ; 
+  //         }         
+  //       }
+  //       console.log(vitri)  ; 
       
-  }
+  // }
 
   // for(i=0;i<10;i++){
   //   for(j=0;j<3;j++){
@@ -330,8 +331,8 @@ router.get("/neural/predict", async (req, res) => {
   const numInput = strInput.map(ele => {
     return parseInt(ele);
   });
-  const result = predictSample(numInput, model);
-  res.status(200).send(result);
+  // const result = predictSample(numInput, model);
+  res.status(200).send();
 });
 
 //--------------------------------------------------
