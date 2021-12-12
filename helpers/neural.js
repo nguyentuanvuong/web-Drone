@@ -184,10 +184,10 @@ function  ketqua_acc_adam () {
 /*
 todo: setup predict using model
 **/
-// function predictSample(sample, model) {
-//   let result = model.predict(tf.tensor(sample, [1, sample.length ])).arraySync();
-//   return result;
-// }
+function predictSample(sample, model) {
+  let result = model.predict(tf.tensor(sample, [1, sample.length])).arraySync();
+  return result;
+}
 
 async function run() {
   const { xs, ys } = await trainingData(
@@ -208,7 +208,7 @@ module.exports = {router,
   configModel,
   trainingData,
   trainModel,
-  // predictSample,
+  predictSample,
   ketqua_acc_sgd,
   ketqua_acc_adam,
   roc,

@@ -1,5 +1,4 @@
-const express = require('express');
-const router = express.Router();
+const router = require("express").Router();
 const fs = require("fs");
 const path = require("path");
 const tf = require("@tensorflow/tfjs");
@@ -9,7 +8,7 @@ const {
   configModel,
   trainingData,
   trainModel,
-  // predictSample,
+  predictSample,
   ketqua_acc_sgd,
   ketqua_acc_adam,
   roc,
@@ -331,8 +330,8 @@ router.get("/neural/predict", async (req, res) => {
   const numInput = strInput.map(ele => {
     return parseInt(ele);
   });
-  // const result = predictSample(numInput, model);
-  res.status(200).send();
+  const result = predictSample(numInput, model);
+  res.status(200).send(result);
 });
 
 //--------------------------------------------------

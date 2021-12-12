@@ -1,8 +1,7 @@
 const express = require('express');
 const app = express();
-const https = require('https');
+// const https = require('https');
 const http = require('http');
-const fs = require('fs');
 const ngrok = require('ngrok');
 const cors = require("cors");
 
@@ -23,8 +22,6 @@ const {
 const io = new Server(httpServer);
 
 var listSocket = [];
-var listPeerId = [];
-var count;
 var trainStartus = false;
 
 app.set("view engine", "ejs");
@@ -76,7 +73,7 @@ app.use("/", require("./routes/fileRoutes"));
 io.on('connection', (socket) => {
     count = io.engine.clientsCount;
     listSocket.push(socket.id);
-    // console.log('Socket number online', count);
+    console.log('Socket number online', count);
     io.emit(socket.id, listSocket);
     socket.broadcast.emit('connect Socket', socket.id);
 
@@ -111,7 +108,7 @@ io.on('connection', (socket) => {
     // console.log('connect', socket.id);
     socket.on('disconnect', () => {
         count = io.engine.clientsCount;
-        // console.log('Socket number online', count);
+        console.log('Socket number online', count);
         listSocket = listSocket.filter((element) => {
             return element !== socket.id;
         });
