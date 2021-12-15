@@ -48,7 +48,8 @@ router.post("/neural/csv_datas", async (req, res) => {
   const busboy = new Busboy({ headers: req.headers });
   var newFilename = uuid();
   busboy.on("file", (fieldname, file, filename, encoding, mimeType) => {
-    newFilename += filename;
+    newFilename = filename;
+    // newFilename += filename;
     const saveTo = path.join("./public/neural/uploads", newFilename);
     if (!mimeType.includes("application/vnd.ms-excel"))
       return res.status(403).json(`file type should be text/csv`);

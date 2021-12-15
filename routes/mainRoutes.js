@@ -30,7 +30,9 @@ router.get("/", (req, res) => {
 // NEURAL NETWORK ..................................
 // config the layer and model
 router.post("/neural/config_model", async (req, res, next) => {
-  
+
+  console.log(req.body);
+  // res.send();
   const { filename, featureHeader, outputHeader, outputCount } = req.body;
   try {
     // validate form
