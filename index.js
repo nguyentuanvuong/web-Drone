@@ -8,10 +8,14 @@ require('dotenv').config();
 
 const httpServer = http.createServer(app);
 
-const {
-    Server
-} = require("socket.io");
-const io = new Server(httpServer);
+// const { Server } = require("socket.io");
+// const io = new Server(httpServer);
+
+const io = require("socket.io")(httpServer, {
+    cors: {
+      methods: ["GET", "POST"]
+    }
+  });
 
 var listSocket = [];
 var trainStartus = false;
@@ -40,7 +44,7 @@ app.use("/", require("./routes/fileRoutes"));
 io.on('connection', (socket) => {
     count = io.engine.clientsCount;
     listSocket.push(socket.id);
-    console.log('Socket number online', count);
+    // console.log('Socket number online', count);
     io.emit(socket.id, listSocket);
     socket.broadcast.emit('connect Socket', socket.id);
 
@@ -76,7 +80,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('disconnect', socket.id);
         count = io.engine.clientsCount;
-        console.log('Socket number online', count);
+        // console.log('Socket number online', count);
         listSocket = listSocket.filter((element) => {
             return element !== socket.id;
         });
@@ -87,8 +91,6 @@ io.on('connection', (socket) => {
 httpServer.listen(process.env.HTTP_PORT, () => {
     console.log('http listening on *:', process.env.HTTP_PORT);
 });
-
-
 
 (async function() {
     const url = await ngrok.connect({
