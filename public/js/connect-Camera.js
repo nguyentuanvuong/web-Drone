@@ -113,6 +113,7 @@ function predictWebcam() {
 }
 
 const drawBox = (res) => {
+
     results.width = camera.offsetWidth;
     results.height = results.width * 9 / 16
     ctx.clearRect(0, 0, results.width, results.height);
@@ -141,6 +142,9 @@ const drawBox = (res) => {
     ctx.lineWidth = 4;
     ctx.fillText(`${result} `, 5, 20);
 
+    
+    socket.emit('results',`${result}`);
+
     for (i = 0; i < valid_detections_data; ++i) {
         let [x1, y1, x2, y2] = boxes_data.slice(i * 4, (i + 1) * 4);
         x1 *= results.width;
@@ -160,7 +164,6 @@ const drawBox = (res) => {
         ctx.fillStyle = "#00FFFF";
         ctx.lineWidth = 4;
         ctx.fillText(`${klass} ${score}`, x1, y1);
-
         // console.log(klass, score, x1, y1, x2, y2);
     }
 }

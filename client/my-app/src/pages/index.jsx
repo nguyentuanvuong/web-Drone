@@ -13,6 +13,13 @@ const socket = io('http://localhost:8000');
 
 socket.on('connect', () => {
   console.log(socket.id);
+  socket.on('results',(msg)=>{
+    console.log(msg);
+  });
+  
+  socket.on('sensor',(msg)=>{
+    console.log(msg);
+  });
 });
 
 

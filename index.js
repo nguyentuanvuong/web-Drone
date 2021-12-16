@@ -3,12 +3,15 @@ const app = express();
 const http = require('http');
 const ngrok = require('ngrok');
 const cors = require("cors");
+const mqtt = require('mqtt');
 const mosca = require('mosca');
 const settings = {
     port : 1883
     }
 
 // const mqttServer = new mosca.Server(settings);
+
+const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
 
 require('dotenv').config();
 
@@ -46,6 +49,14 @@ app.use('/api', apiRouter);
 app.use("/", require("./routes/mainRoutes"));
 app.use("/", require("./routes/fileRoutes"));
 
+mqttClient.on('connect',()=>{
+    mqttClient.subscribe('ntvuong');
+    console.log('mqtt Connect');
+    mqttClient.on('message',(topic, msg)=>{
+        io.emit('sensor',msg.toString());
+    });
+});
+
 
 io.on('connection', (socket) => {
     count = io.engine.clientsCount;
@@ -56,6 +67,14 @@ io.on('connection', (socket) => {
 
     socket.on('StreamID', msg => {
         socket.broadcast.emit('AllCam', msg);
+    });
+
+    socket.on('results',(msg)=>{
+        socket.broadcast.emit('results',msg);
+    });
+
+    socket.on('sensor',(msg)=>{
+        socket.broadcast.emit('sensor',msg);
     });
 
     socket.on('trainStartus',(msg)=>{
