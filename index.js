@@ -3,6 +3,12 @@ const app = express();
 const http = require('http');
 const ngrok = require('ngrok');
 const cors = require("cors");
+const mosca = require('mosca');
+const settings = {
+    port : 1883
+    }
+
+// const mqttServer = new mosca.Server(settings);
 
 require('dotenv').config();
 
