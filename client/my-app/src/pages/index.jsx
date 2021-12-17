@@ -15,6 +15,7 @@ socket.on('connect', () => {
   console.log(socket.id);
   socket.on('results',(msg)=>{
     console.log(msg);
+    // alert("Hello! I am an alert box!!");
   });
   
   socket.on('sensor',(msg)=>{
