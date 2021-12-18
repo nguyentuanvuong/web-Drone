@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!-- <!DOCTYPE HTML>
 <html>
 
 <head>
@@ -39,4 +39,53 @@
 
 </body>
 
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io()
+    console.log(Notification.permission);
+if (Notification.permission === "granted") {
+  // If it's okay let's create a notification
+  console.log('scvahsvcjasvcjavsjc');
+  var notification = new Notification("Hi there!");
+}
+
+// Otherwise, we need to ask the user for permission
+else if (Notification.permission !== "denied") {
+  Notification.requestPermission().then(function (permission) {
+    // If the user accepts, let's create a notification
+    if (permission === "granted") {
+      var notification = new Notification("Hi there!");
+    }
+  });
+}
+
+
+socket.on('connect', () => {
+  console.log(socket.id);
+  socket.on('results', (msg) => {
+    console.log(msg);
+  });
+
+  socket.on('sensor', (msg) => {
+    new Notification(msg);
+    console.log(msg);
+  });
+});
+
+
+</script>
 </html>

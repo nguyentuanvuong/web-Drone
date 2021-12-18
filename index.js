@@ -4,14 +4,12 @@ const http = require('http');
 const ngrok = require('ngrok');
 const cors = require("cors");
 const mqtt = require('mqtt');
-const mosca = require('mosca');
-const settings = {
-    port : 1883
-    }
 
 // const mqttServer = new mosca.Server(settings);
 
 const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
+
+// const mqttClient = mqtt.connect('63156a3d1fef45f8826b24ff258bb6e4.s1.eu.hivemq.cloud');
 
 require('dotenv').config();
 
@@ -117,10 +115,10 @@ httpServer.listen(process.env.HTTP_PORT, () => {
     console.log('http listening on *:', process.env.HTTP_PORT);
 });
 
-(async function() {
-    const url = await ngrok.connect({
-        addr: process.env.HTTP_PORT,
-        authtoken: process.env.NGROK_TOKEN
-    });
-    console.log(url);
-  })();
+// (async function() {
+//     const url = await ngrok.connect({
+//         addr: process.env.HTTP_PORT,
+//         authtoken: process.env.NGROK_TOKEN
+//     });
+//     console.log(url);
+//   })();

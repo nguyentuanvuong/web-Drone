@@ -3,6 +3,10 @@ const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
+const fetch = require('node-fetch');
+
+require('dotenv').config();
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -10,7 +14,7 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         if (file.mimetype.split("/")[1] == 'x-zip-compressed') {
-            cb(null, file.originalname + '-' + Date.now()+ '.zip');
+            cb(null, file.originalname + '-' + Date.now() + '.zip');
             // cb(null, `${makeid(50)}.zip`);
         } else {
             cb(new Error("Not a zip File!!"), false);
@@ -27,20 +31,59 @@ router.post('/update-dataset', upload.single('dataset'), (req, res) => {
     res.json(req.file);
 });
 
-router.get('/list-file',(req, res)=>{
+router.get('/list-file', (req, res) => {
     const files = fs.readdirSync('./public/datasets');
     res.json(files);
-    
+
 });
 
-router.get('/:path/:file', function(req, res, next) {
-    var path = './data/'+req.params.path+'/'+req.params.file;
-    var fd = fs.readFileSync(path,function(err){
-      if(err) res.send(err);
+router.get('/:path/:file', function (req, res, next) {
+    var path = './data/' + req.params.path + '/' + req.params.file;
+    var fd = fs.readFileSync(path, function (err) {
+        if (err) res.send(err);
     });
     var data = JSON.parse(fd);
     res.json(data);
-  });
+});
+
+router.post('/zalo', (req, res) => {
+    const data = req.body;
+    const event = data.event_name;
+
+    if(event == 'user_send_text'){
+        fetch('https://openapi.zalo.me/v2.0/oa/message', {
+            method: 'POST',
+            headers: {
+                'access_token': process.env.ZALO_ACCESS_TOKEN,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "recipient": {
+                    // "user_id": data.sender.id,
+                    "message_id":data.message.msg_id
+                },
+                "message": {
+                    "text": `Bạn đã gửi tin nhắn:  ${JSON.stringify(data)}`,
+                    // "quote_message_id":data.message.msg_id
+                }
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log(res);
+        });
+    }
+    else {
+        console.log(data);
+    }
+    
+
+    res.send('');
+});
+
+
+
+
 
 // function makeid(length) {
 //     var result = '';
