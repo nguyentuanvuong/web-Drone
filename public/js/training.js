@@ -94,58 +94,51 @@ $('#train_model').submit(function (event) {
     event.preventDefault();
 });
 
-function Chart(response){
 
 
-    const data = response.data.trainingInfo;
+function Chart(response) {
+    const data = response.data;
+
     
-    console.log(JSON.stringify(data));
+    const exModel = document.getElementById('export');
+    exModel.href = `/neural/export_model?modelToken=${data.modelToken}`;
+    
+    exModel.style.display = '';
 
     Highcharts.chart('container', {
 
         title: {
-            text: 'Solar Employment Growth by Sector, 2010-2016'
+            text: 'Model is trained'
         },
-    
+
         subtitle: {
-            text: 'Source: thesolarfoundation.com'
+            text: data.modelToken
         },
-    
-        yAxis: {
-            title: {
-                text: 'Number of Employees'
-            }
-        },
-    
-        xAxis: {
-            accessibility: {
-                rangeDescription: 'Range: 2010 to 2017'
-            }
-        },
-    
+
+
         legend: {
             layout: 'vertical',
             align: 'right',
             verticalAlign: 'middle'
         },
-    
+
         plotOptions: {
             series: {
                 label: {
                     connectorAllowed: false
                 },
-                pointStart: 2010
+                pointStart: 0
             }
         },
-    
+
         series: [{
             name: 'loss',
-            data: data.loss
+            data: data.trainingInfo.loss
         }, {
             name: 'acc',
-            data: data.acc
+            data: data.trainingInfo.acc
         }],
-    
+
         responsive: {
             rules: [{
                 condition: {
@@ -160,7 +153,7 @@ function Chart(response){
                 }
             }]
         }
-    
+
     });
 }
 

@@ -52,8 +52,7 @@ router.post("/neural/config_model", async (req, res, next) => {
       });
     }
 
-    
-    console.log("da vao day2!!");
+
     // create training data
     const { xs, ys, error } = await trainingData(
       filename,
@@ -63,7 +62,6 @@ router.post("/neural/config_model", async (req, res, next) => {
       outputCount
     );
     
-    console.log("da vao day2!!!!");
     // if errors respone error to client and exit
     if (error) {
       return res.status(400).json({
@@ -71,8 +69,6 @@ router.post("/neural/config_model", async (req, res, next) => {
       });
     }
 
-    
-    console.log("da vao day2!!");
     // Set data to global variable x_train,y_train,feature_count and output count
     x_train = xs;
     y_train = ys;
@@ -104,7 +100,7 @@ router.post("/neural/train_model", async (req, res, next) => {
     Number.parseInt(batchSize),
     Number(learningRate)
   );
-  console.log(`model info ${JSON.stringify(info)}`);
+  // console.log(`model info ${JSON.stringify(info)}`);
  
 
 
