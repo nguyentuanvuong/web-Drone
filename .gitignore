@@ -10,4 +10,3 @@ config
 models
 .vscode
 .env
-.venv

@@ -12,11 +12,16 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
 // set the home page route
-app.get('/', function(req, res) {
+const indexRouter = require('./routes/index');
+const adminRouter = require('./routes/admin');
+const apiRouter = require('./routes/api');
 
-	// ejs render automatically looks in the views folder
-	res.render('index');
-});
+app.use('/', indexRouter);
+app.use('/admin', adminRouter);
+app.use('/api', apiRouter);
+
+app.use("/", require("./routes/mainRoutes"));
+app.use("/", require("./routes/fileRoutes"));
 
 app.listen(port, function() {
 	console.log('Our app is running on http://localhost:' + port);
