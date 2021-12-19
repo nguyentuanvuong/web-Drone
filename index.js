@@ -7,13 +7,13 @@ const mqtt = require('mqtt');
 
 // const mqttServer = new mosca.Server(settings);
 
-const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
+// const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
 
 // const mqttClient = mqtt.connect('63156a3d1fef45f8826b24ff258bb6e4.s1.eu.hivemq.cloud');
 
 require('dotenv').config();
 
-const httpPort = process.env.HTTP_PORT || 8080;
+var httpPort = process.env.HTTP_PORT || 8080;
 
 const httpServer = http.createServer(app);
 
@@ -37,14 +37,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const indexRouter = require('./routes/index');
-const adminRouter = require('./routes/admin');
-const apiRouter = require('./routes/api');
+// const adminRouter = require('./routes/admin');
+// const apiRouter = require('./routes/api');
 
 
 
 app.use('/', indexRouter);
-app.use('/admin', adminRouter);
-app.use('/api', apiRouter);
+// app.use('/admin', adminRouter);
+// app.use('/api', apiRouter);
 
 // app.use("/", require("./routes/mainRoutes"));
 // app.use("/", require("./routes/fileRoutes"));
