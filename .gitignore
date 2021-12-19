@@ -7,4 +7,5 @@ train
 img
 uploads
 config
+neural/models
 .vscode
