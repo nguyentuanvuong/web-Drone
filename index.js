@@ -13,6 +13,8 @@ const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
 
 require('dotenv').config();
 
+const httpPort = process.env.HTTP_PORT || 8000;
+
 const httpServer = http.createServer(app);
 
 // const { Server } = require("socket.io");
@@ -111,13 +113,13 @@ io.on('connection', (socket) => {
     });
 });
 
-httpServer.listen(process.env.HTTP_PORT, () => {
-    console.log('http listening on *:', process.env.HTTP_PORT);
+httpServer.listen(httpPort, () => {
+    console.log('http listening on *:',httpPort);
 });
 
 // (async function() {
 //     const url = await ngrok.connect({
-//         addr: process.env.HTTP_PORT,
+//         addr: httpPort,
 //         authtoken: process.env.NGROK_TOKEN
 //     });
 //     console.log(url);
