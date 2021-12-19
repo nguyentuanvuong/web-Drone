@@ -5,4 +5,5 @@ cd web-Drone
 npm install
 npm start
 ```
-
+## Live app
+https://drone-covid.herokuapp.com/

@@ -44,8 +44,8 @@ app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
 
-// app.use("/", require("./routes/mainRoutes"));
-// app.use("/", require("./routes/fileRoutes"));
+app.use("/", require("./routes/mainRoutes"));
+app.use("/", require("./routes/fileRoutes"));
 
 mqttClient.on('connect',()=>{
     mqttClient.subscribe('ntvuong');
