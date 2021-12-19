@@ -4,9 +4,14 @@ const camera = document.getElementById('view-Cam');
 const videoView = document.createElement('video');
 const list_camera = document.getElementById('list_camera');
 const results = document.getElementById('results');
+const btnPredict = document.getElementById('btn_predict');
 const ctx = results.getContext("2d");
 const socket = io()
 
+btnPredict.addEventListener('click', predictSenSor);
+
+
+const weightsSensor = '/neural/test_model/model.json';
 
 const weights = 'yolov5s_web_model/model.json';
 const [modelWeight, modelHeight] = [256, 256];
@@ -26,12 +31,15 @@ const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'tra
 // const names = ['fire']
 
 var model = undefined;
+var modelSenor = undefined;
 var myVar;
 
-load(weights);
+load(weights,weightsSensor);
 
-async function load(weights) {
+async function load(weights,weightsSensor) {
     model = await tf.loadGraphModel(weights);
+    modelSenor = await tf.loadLayersModel(weightsSensor);
+    modelSenor.summary();
     ctx.clearRect(0, 0, results.width, results.height);
     // tf.setBackend('webgl');
     console.log(tf.getBackend());
@@ -142,8 +150,8 @@ const drawBox = (res) => {
     ctx.lineWidth = 4;
     ctx.fillText(`${result} `, 5, 20);
 
-    
-    socket.emit('results',`${result}`);
+
+    socket.emit('results', `${result}`);
 
     for (i = 0; i < valid_detections_data; ++i) {
         let [x1, y1, x2, y2] = boxes_data.slice(i * 4, (i + 1) * 4);
@@ -172,3 +180,23 @@ function sendImg() {
     var imgString = results.toDataURL();
     socket.emit('StreamID', { "socketID": socket.id, "img": imgString });
 }
+
+
+function predictSenSor() {
+    const sensor = document.getElementById('sensor');
+    const input = sensor.value;
+    const strInput = input.split(" ");
+    console.log(strInput)
+    const numInput = strInput.map(ele => {
+        return parseInt(ele);
+    });
+
+    const result = predictSample(numInput, modelSenor);
+    console.log(JSON.stringify(result));
+
+}
+
+function predictSample(sample, model) {
+    let result = model.predict(tf.tensor(sample, [1, sample.length])).arraySync();
+    return result;
+  }
