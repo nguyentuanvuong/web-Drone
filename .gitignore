@@ -7,4 +7,4 @@ uploads
 config
 models
 .vscode
-.env
+# .env
