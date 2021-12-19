@@ -13,7 +13,7 @@ const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
 
 require('dotenv').config();
 
-const httpPort = process.env.HTTP_PORT || 8000;
+const httpPort = process.env.HTTP_PORT || 8080;
 
 const httpServer = http.createServer(app);
 
