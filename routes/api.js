@@ -46,39 +46,69 @@ router.get('/:path/:file', function (req, res, next) {
     res.json(data);
 });
 
-router.post('/zalo', (req, res) => {
-    const data = req.body;
-    const event = data.event_name;
+router.get('/zalo', (req, res) => {
+    res.status(200).send();
+});
 
-    if(event == 'user_send_text'){
-        fetch('https://openapi.zalo.me/v2.0/oa/message', {
-            method: 'POST',
-            headers: {
-                'access_token': process.env.ZALO_ACCESS_TOKEN,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "recipient": {
-                    // "user_id": data.sender.id,
-                    "message_id":data.message.msg_id
-                },
-                "message": {
-                    "text": `Bạn đã gửi tin nhắn:  ${JSON.stringify(data)}`,
-                    // "quote_message_id":data.message.msg_id
-                }
-            })
-        })
-        .then(response => response.json())
-        .then(res => {
-            console.log(res);
-        });
-    }
-    else {
-        console.log(data);
-    }
+router.post('/sendZalo', (req, res) => {
     
+    fetch('https://openapi.zalo.me/v2.0/oa/message', {
+        method: 'POST',
+        headers: {
+            'access_token': process.env.ZALO_ACCESS_TOKEN,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "recipient": {
+                "user_id": "3469747508247772258",
+            },
+            "message": {
+                "text": `
+                Cảnh báo nhà bạn sắp cháy: `,
+                // "quote_message_id":data.message.msg_id
+            }
+        })
+    })
+        .then(response => response.json())
+        .then(dt => {
+            console.log(dt);
+            res.send(dt);
+        });
+});
 
-    res.send('');
+router.post('/zalo', (req, res) => {
+    // const data = req.body;
+    // const event = data.event_name;
+
+    // if(event == 'user_send_text'){
+    //     fetch('https://openapi.zalo.me/v2.0/oa/message', {
+    //         method: 'POST',
+    //         headers: {
+    //             'access_token': process.env.ZALO_ACCESS_TOKEN,
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //             "recipient": {
+    //                 // "user_id": data.sender.id,
+    //                 "message_id":data.message.msg_id
+    //             },
+    //             "message": {
+    //                 "text": `Bạn đã gửi tin nhắn:  ${JSON.stringify(data)}`,
+    //                 // "quote_message_id":data.message.msg_id
+    //             }
+    //         })
+    //     })
+    //     .then(response => response.json())
+    //     .then(res => {
+    //         console.log(res);
+    //     });
+    // }
+    // else {
+    //     console.log(data);
+    // }
+
+
+    res.status(200).send();
 });
 
 

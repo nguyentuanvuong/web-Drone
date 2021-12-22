@@ -1,15 +1,14 @@
-// const { io } = require("socket.io-client");
-
 const camera = document.getElementById('view-Cam');
 const videoView = document.createElement('video');
 const list_camera = document.getElementById('list_camera');
 const results = document.getElementById('results');
 const btnPredict = document.getElementById('btn_predict');
+const connectSerial = document.getElementById('connectSerial');
 const ctx = results.getContext("2d");
 const socket = io()
 
-btnPredict.addEventListener('click', predictSenSor);
-
+btnPredict.addEventListener('click', predictSample);
+connectSerial.addEventListener('click', Serial);
 
 const weightsSensor = '/neural/test_model/model.json';
 
@@ -34,17 +33,25 @@ var model = undefined;
 var modelSenor = undefined;
 var myVar;
 
-load(weights,weightsSensor);
 
-async function load(weights,weightsSensor) {
+var object = undefined;
+
+
+load(weights, weightsSensor);
+
+
+
+async function load(weights, weightsSensor) {
     model = await tf.loadGraphModel(weights);
     modelSenor = await tf.loadLayersModel(weightsSensor);
-    modelSenor.summary();
+    // modelSenor.summary();
     ctx.clearRect(0, 0, results.width, results.height);
     // tf.setBackend('webgl');
-    console.log(tf.getBackend());
+    // console.log(tf.getBackend());
     list_camera.style.display = '';
+
 }
+
 
 navigator.mediaDevices.enumerateDevices().then(function (devices) {
     devices.forEach(element => {
@@ -85,8 +92,8 @@ function enableCam(device) {
             };
             videoView.addEventListener('loadeddata', predictWebcam);
         });
-        clearInterval(myVar);
-        setInterval(sendImg, 10000);
+        // clearInterval(myVar);
+        // setInterval(sendImg, 10000);
     }
     else console.log('model loading .....');
 }
@@ -172,7 +179,14 @@ const drawBox = (res) => {
         ctx.fillStyle = "#00FFFF";
         ctx.lineWidth = 4;
         ctx.fillText(`${klass} ${score}`, x1, y1);
-        // console.log(klass, score, x1, y1, x2, y2);
+
+        if (classes_data[i] == 0) {
+            // console.log(klass, score, x1, y1, x2, y2);
+            // sendSerial();
+            object = klass;
+        }
+        else object = undefined;
+
     }
 }
 
@@ -182,7 +196,7 @@ function sendImg() {
 }
 
 
-function predictSenSor() {
+function predictSample() {
     const sensor = document.getElementById('sensor');
     const input = sensor.value;
     const strInput = input.split(" ");
@@ -190,13 +204,69 @@ function predictSenSor() {
     const numInput = strInput.map(ele => {
         return parseInt(ele);
     });
-
-    const result = predictSample(numInput, modelSenor);
+    const result = modelSenor.predict(tf.tensor(numInput, [1, numInput.length])).arraySync();
     console.log(JSON.stringify(result));
+}
+
+function sendZalo(msg){
 
 }
 
-function predictSample(sample, model) {
-    let result = model.predict(tf.tensor(sample, [1, sample.length])).arraySync();
-    return result;
-  }
+
+connectSerial.addEventListener('click', Serial);
+
+async function Serial() {
+    if (navigator.serial) {
+
+        const log = document.getElementById('target');
+
+        try {
+            var count = 0;
+            const port = await navigator.serial.requestPort();
+            await port.open({ baudRate: 9600 });
+
+
+            const decoder = new TextDecoderStream();
+
+            port.readable.pipeTo(decoder.writable);
+
+            const inputStream = decoder.readable;
+            const reader = inputStream.getReader();
+
+            const write = document.getElementById('writeSerial');
+            write.addEventListener('click', sendSerial);
+            setInterval(() => {
+                if (object != undefined) {
+                    sendSerial();
+                }
+            }, 1000);
+
+
+            async function sendSerial() {
+                const encoder = new TextEncoder();
+                const writer = port.writable.getWriter();
+                await writer.write(encoder.encode(`${object}\n`));
+                writer.releaseLock();
+            }
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (value) {
+                    log.textContent += value + '\n';
+                    console.log(value + '\n');
+                }
+                if (done) {
+                    console.log('[readLoop] DONE', done);
+                    reader.releaseLock();
+                    break;
+                }
+            }
+        }
+        catch (error) {
+            log.innerHTML = error;
+        }
+    } else {
+        alert('Web Serial API not supported.');
+    }
+}
+

@@ -1,9 +1,18 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const https = require('https');
 const ngrok = require('ngrok');
 const cors = require("cors");
 const mqtt = require('mqtt');
+const fs = require('fs');
+
+const options = {
+    key: fs.readFileSync('config/ssl/key.pem'),
+    cert: fs.readFileSync('config/ssl/cert.pem')
+};
+
+const httpsServer = https.createServer(options, app);
 
 
 const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
@@ -12,8 +21,7 @@ const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
 
 require('dotenv').config();
 
-var httpPort = process.env.HTTP_PORT || 8080;
-
+var httpPort = process.env.HTTP_PORT;
 const httpServer = http.createServer(app);
 
 // const { Server } = require("socket.io");
@@ -21,9 +29,9 @@ const httpServer = http.createServer(app);
 
 const io = require("socket.io")(httpServer, {
     cors: {
-      methods: ["GET", "POST"]
+        methods: ["GET", "POST"]
     }
-  });
+});
 
 var listSocket = [];
 var trainStartus = false;
@@ -31,7 +39,7 @@ var trainStartus = false;
 app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(express.static('public'));
-app.use(cors());  
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -46,13 +54,13 @@ app.use('/api', apiRouter);
 app.use("/", require("./routes/mainRoutes"));
 app.use("/", require("./routes/fileRoutes"));
 
-mqttClient.on('connect',()=>{
-    mqttClient.subscribe('ntvuong');
-    console.log('mqtt Connect');
-    mqttClient.on('message',(topic, msg)=>{
-        io.emit('sensor',msg.toString());
-    });
-});
+// mqttClient.on('connect', () => {
+//     mqttClient.subscribe('ntvuong');
+//     console.log('mqtt Connect');
+//     mqttClient.on('message', (topic, msg) => {
+//         io.emit('sensor', msg.toString());
+//     });
+// });
 
 
 io.on('connection', (socket) => {
@@ -66,36 +74,36 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('AllCam', msg);
     });
 
-    socket.on('results',(msg)=>{
-        socket.broadcast.emit('results',msg);
+    socket.on('results', (msg) => {
+        socket.broadcast.emit('results', msg);
     });
 
-    socket.on('sensor',(msg)=>{
-        socket.broadcast.emit('sensor',msg);
+    socket.on('sensor', (msg) => {
+        socket.broadcast.emit('sensor', msg);
     });
 
-    socket.on('trainStartus',(msg)=>{
-        socket.broadcast.emit('dataset','');
-        io.emit('trainStartus',trainStartus);
+    socket.on('trainStartus', (msg) => {
+        socket.broadcast.emit('dataset', '');
+        io.emit('trainStartus', trainStartus);
     });
-    socket.on('dataset',(msg)=>{
-        socket.broadcast.emit('dataset',msg);
+    socket.on('dataset', (msg) => {
+        socket.broadcast.emit('dataset', msg);
     });
-    socket.on('training',(msg)=>{
-        if(!trainStartus) {
-            socket.broadcast.emit('training',msg);
+    socket.on('training', (msg) => {
+        if (!trainStartus) {
+            socket.broadcast.emit('training', msg);
         }
     });
-    socket.on('TrainingDone',(msg)=>{
+    socket.on('TrainingDone', (msg) => {
         trainStartus = false;
-        socket.broadcast.emit('trainStartus',trainStartus);
+        socket.broadcast.emit('trainStartus', trainStartus);
     });
-    socket.on('TrainingStart',(msg)=>{
+    socket.on('TrainingStart', (msg) => {
         trainStartus = true;
-        socket.broadcast.emit('trainStartus',trainStartus);
+        socket.broadcast.emit('trainStartus', trainStartus);
     });
-    socket.on('CreateTrainingFile',(msg)=>{
-        socket.broadcast.emit('CreateTrainingFile',msg);
+    socket.on('CreateTrainingFile', (msg) => {
+        socket.broadcast.emit('CreateTrainingFile', msg);
     });
 
     console.log('connect', socket.id);
@@ -111,7 +119,7 @@ io.on('connection', (socket) => {
 });
 
 httpServer.listen(httpPort, () => {
-    console.log('http listening on *:',httpPort);
+    console.log('http listening on *:', httpPort);
 });
 
 // (async function() {
