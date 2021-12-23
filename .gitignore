@@ -3,7 +3,7 @@ package-lock.json
 datasets
 # train
 img
-uploads
+# uploads
 config
 models
 .vscode

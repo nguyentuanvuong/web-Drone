@@ -206,8 +206,8 @@ const drawBox = (res) => {
             ctx.fillText('.', fire_x, fire_y);
 
 
-            fire_x = mapValue(fire_x, 0, results.width, 140, 55);
-            fire_y = mapValue(fire_y, 0, results.height, 60, 80);
+            fire_x = mapValue(fire_x, 0, results.width, 85, 95);
+            fire_y = mapValue(fire_y, 0, results.height, 35, 95);
 
 
 
@@ -218,11 +218,12 @@ const drawBox = (res) => {
             fire_position = JSON.parse(`
                 {
                     "position":{
-                        "x": ${fire_x},
+                        "x": 90,
                         "y": ${fire_y}
                     }
                 }
             `);
+            return;
 
         }
     }
@@ -296,7 +297,7 @@ async function prediction() {
 
 async function sendGateway(event, msg) {
     if (msg && port) {
-
+        sendZalo();
         var frame = {};
         frame.event_name = event;
         frame.body = msg;
@@ -311,6 +312,29 @@ async function sendGateway(event, msg) {
     else PrintSerial('no data or port \n');
 }
 
+function sendZalo(){
+    fetch('https://openapi.zalo.me/v2.0/oa/message', {
+        method: 'POST',
+        headers: {
+            'access_token':'nCtbMQ-e2Yl9o-THewmF9CFAu5UejNnWcDJYMFlqRMhctDPCtkvaVFhozMcQncz9h_JWVuViRcoxte95eTPdK8Blqdovn7PQqwtWGBUU13MtbvO7lRu11DkjbZFlhGays9wy7REa5XBOe8OAowuJAkt8crsAj01TaAQ99h2701MCXBarkB8H5O-9W3ckwcKpoyw1A_Fj1JpLwkb8ukyPKCJjgdVEop9lpVYzIDx-0MV4_kjtpkXKKkYFstJvhMa5_hFiFkItVpRdjkeopRv15DIVoI_afM84m8AE1CBd5n5rKb7TGgMo2oW ',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "recipient": {
+                "user_id": "3469747508247772258",
+            },
+            "message": {
+                "text": `[Emergency Warning] Today December 24, 2021, current room temperature is 31, humidity is 70% and smoke is detected, potential fire hazard. Please check immediately `,
+                // "quote_message_id":data.message.msg_id
+            }
+        })
+    })
+        .then(response => response.json())
+        .then(dt => {
+            console.log(dt);
+            res.send(dt);
+        });
+}
 
 function PrintSerial(msg) {
     const log = document.getElementById('Serial');

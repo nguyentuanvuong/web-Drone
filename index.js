@@ -7,15 +7,15 @@ const cors = require("cors");
 const mqtt = require('mqtt');
 const fs = require('fs');
 
-const options = {
-    key: fs.readFileSync('config/ssl/key.pem'),
-    cert: fs.readFileSync('config/ssl/cert.pem')
-};
+// const options = {
+//     key: fs.readFileSync('config/ssl/key.pem'),
+//     cert: fs.readFileSync('config/ssl/cert.pem')
+// };
 
-const httpsServer = https.createServer(options, app);
+// const httpsServer = https.createServer(options, app);
 
 
-const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
+// const mqttClient = mqtt.connect('mqtt://broker.hivemq.com');
 
 // const mqttClient = mqtt.connect('63156a3d1fef45f8826b24ff258bb6e4.s1.eu.hivemq.cloud');
 
