@@ -8,26 +8,55 @@
 </head>
 
 <body>
-    <div id="root" class="container" style="display: none;">
+    <div id="root" class="container" >
         <div id="connect" class="form-floating d-flex">
             <input type="number" class="form-control" name="" id="user_id" value="3469747508247772258">
+            <!-- <input type="number" class="form-control" name="" id="user_id" value="3487899611869215778"> -->
             <!-- <input type="number" class="form-control" name="" id="user_id" > -->
             <label class="form-label" for="">User ID: </label>
             <button id="btn_connect" class="btn btn-primary">Connect</button>
-        </div>
+        </div style="display: none;">
         <div class="row">
-            <div id="list_camera"  class="col-3">
-                <!-- <button onclick="enableTest()">test video</button> -->
+            <div id="list_camera" class="col-3">
             </div>
-            <div class="col-9">
-                <div id="view-Cam">
-                    <canvas id="results" style="display: none;"></canvas>
+            <div class="col-9" id="block-test"  style="display: none;">
+                <div class="d-flex" id="setting" >
+                    <div class="input-group">
+                        <label class="input-group-text" for="">x1</label>
+                        <input class="form-control" type="number" value="140" id="x1">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-group-text" for="">y1</label>
+                        <input class="form-control" type="number" value="60" id="y1">
+                    </div>
+                    <div>
+                        <button id="set_x1y1" class="btn btn-primary">Set</button>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-group-text" for="">x2</label>
+                        <input class="form-control" type="number" value="55" id="x2">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-group-text" for="">y1</label>
+                        <input class="form-control" type="number" value="80" id="y2">
+                    </div>
+                    <div>
+                        <button id="set_x2y2" class="btn btn-primary">Set</button>
+                    </div>
                 </div>
+                <div id="view-Cam">
+                    <canvas id="results" ></canvas>
+                </div>
+
             </div>
-            <textArea id="Serial" class="form-control" rows="5" style="resize: none;" disabled></textArea>
+            <div style="padding: 5px 11px 5px 11px;">
+                <textArea id="Serial" class="form-control" cols="4" rows="5" disabled></textArea>
+            </div>
+            
+
         </div>
         <div>
-            <div>
+            <div style="display: none;">
                 <input type="text" id="sensor" value="26.65 92 0.26 0">
                 <button id="btn_predict" class="btn btn-primary">predict</button>
             </div>

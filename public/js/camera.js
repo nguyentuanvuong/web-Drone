@@ -5,6 +5,8 @@ const results = document.getElementById('results');
 const camera = document.getElementById('view-Cam');
 const userID = document.getElementById('user_id');
 const btnPredict = document.getElementById('btn_predict');
+const X1Y1 = document.getElementById('set_x1y1');
+const X2Y2 = document.getElementById('set_x2y2');
 
 const ctx = results.getContext("2d");
 
@@ -35,9 +37,35 @@ var modelSenor = undefined;
 var listCamera = undefined;
 var port = undefined;
 var fire_position = undefined;
-
-
 load(weights, weightsSensor);
+
+
+const L_x1 = document.getElementById('x1');
+const L_y1 = document.getElementById('y1');
+const L_x2 = document.getElementById('x2');
+const L_y2 = document.getElementById('y2');
+
+X1Y1.addEventListener('click', () => {
+    fire_position = JSON.parse(`
+            {
+                "position":{
+                    "x": ${L_x1.value},
+                    "y": ${L_y1.value}
+                }
+            }
+        `);
+});
+
+X2Y2.addEventListener('click', () => {
+    fire_position = JSON.parse(`
+            {
+                "position":{
+                    "x": ${L_x2.value},
+                    "y": ${L_y2.value}
+                }
+            }
+        `);
+});
 
 async function load(weights, weightsSensor) {
     model = await tf.loadGraphModel(weights);
@@ -80,6 +108,7 @@ async function viewListCamera() {
 
 function enableCam(device) {
     if (model) {
+        document.getElementById('block-test').style.display = " block"
         results.style = '';
         var constraints = {
             video: {
@@ -117,6 +146,11 @@ const drawBox = (res) => {
     results.height = results.width * 9 / 16
     ctx.clearRect(0, 0, results.width, results.height);
     ctx.drawImage(videoView, 0, 0, results.width, results.height);
+
+    ctx.font = "80px Arial";
+    ctx.fillStyle = "#FFFF00";
+    ctx.lineWidth = 1;
+    ctx.fillText('+', results.width / 2 - 25, 30);
 
     const [boxes, scores, classes, valid_detections] = res;
     const boxes_data = boxes.dataSync();
@@ -161,11 +195,10 @@ const drawBox = (res) => {
         ctx.lineWidth = 4;
         ctx.fillText(`${klass} ${score}`, x1, y1);
 
-        if (classes_data[i] == 0) {
-            fire_x = (x1 + x2) / 2;
-            fire_y = (y1 + y2) / 2;
+        if (classes_data[i] == 0) {           
 
-            
+            var fire_x = (x1 + x2) / 2;
+            var fire_y = (y1 + y2) / 2;
 
             ctx.font = "80px Arial";
             ctx.fillStyle = "#FF0000";
@@ -173,18 +206,23 @@ const drawBox = (res) => {
             ctx.fillText('.', fire_x, fire_y);
 
 
+            fire_x = mapValue(fire_x, 0, results.width, 140, 55);
+            fire_y = mapValue(fire_y, 0, results.height, 60, 80);
 
-            fire_x = fire_x/ 10;
-            fire_y = fire_y/ 10;
+
+
+
+            fire_x = fire_x.toFixed(0);
+            fire_y = fire_y.toFixed(0);
 
             fire_position = JSON.parse(`
-            {
-                "position":{
-                    "x": ${fire_x},
-                    "y": ${fire_y}
+                {
+                    "position":{
+                        "x": ${fire_x},
+                        "y": ${fire_y}
+                    }
                 }
-            }
-        `);
+            `);
 
         }
     }
@@ -193,6 +231,7 @@ const drawBox = (res) => {
 
 
 async function Serial() {
+
     const connect = document.getElementById('connect');
     if (userID.value) {
         if (navigator.serial) {
@@ -213,7 +252,7 @@ async function Serial() {
 
                 setInterval(() => {
                     if (fire_position) {
-                        sendGateway('fire_position',fire_position);
+                        sendGateway('fire_position', fire_position);
                         fire_position = undefined;
                     }
                 }, 2000);
@@ -221,7 +260,7 @@ async function Serial() {
                 while (true) {
                     const { value, done } = await reader.read();
                     if (value) {
-                        PrintSerial('GateWay: '+value + '\n');
+                        PrintSerial('GateWay: ' + value + '\n');
                     }
                     if (done) {
                         console.log('[readLoop] DONE', done);
@@ -250,8 +289,8 @@ async function prediction() {
         return parseInt(ele);
     });
     const result = await modelSenor.predict(tf.tensor(numInput, [1, numInput.length])).arraySync();
-    // console.log(JSON.stringify(result));
-    sendGateway(JSON.stringify(result));
+    console.log(JSON.stringify(result));
+    // sendGateway(JSON.stringify(result));
 }
 
 
@@ -262,13 +301,14 @@ async function sendGateway(event, msg) {
         frame.event_name = event;
         frame.body = msg;
 
-        // console.log(JSON.stringify(frame));
+        console.log(JSON.stringify(frame));
 
         const encoder = new TextEncoder();
         const writer = port.writable.getWriter();
         await writer.write(encoder.encode(`${JSON.stringify(frame)}\n`));
         writer.releaseLock();
-    } else PrintSerial('no data or port \n');
+    }
+    else PrintSerial('no data or port \n');
 }
 
 
@@ -278,5 +318,7 @@ function PrintSerial(msg) {
     log.append(msg);
 }
 
-
+function mapValue(x, in_min, in_max, out_min, out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 

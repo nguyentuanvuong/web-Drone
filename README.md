@@ -8,6 +8,12 @@ npm start
 ## Live app
 https://drone-covid.herokuapp.com/
 
+{"event_name":"fire_position","body":{"position":{"x":90,"y":40}}}
+
+{"event_name":"fire_position","body":{"position":{"x":147,"y":57}}}
+
+{"event_name":"fire_position","body":{"position":{"x":55,"y":80}}}
+
 
 ### tai lieu
 https://whatwebcando.today/serial.html
