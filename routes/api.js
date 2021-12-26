@@ -37,6 +37,13 @@ router.get('/list-file', (req, res) => {
 
 });
 
+
+router.get('/list-models-tf', (req, res) => {
+    const files = fs.readdirSync('./public/neural/models');
+    res.json(files);
+
+});
+
 router.get('/:path/:file', function (req, res, next) {
     var path = './data/' + req.params.path + '/' + req.params.file;
     var fd = fs.readFileSync(path, function (err) {

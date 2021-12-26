@@ -37,6 +37,7 @@ void setup()
       ;
   }
   Serial.println("LoRa init succeeded.");
+  ServoControl(0,0)
   LoRa.onReceive(onReceive);
   LoRa.onTxDone(onTxDone);
   LoRa_rxMode();
@@ -44,16 +45,13 @@ void setup()
 
 void loop()
 {
-  // ServoControl(0,0);
-  // delay(5000);
-  // ServoControl(90,90);
-  // delay(5000);
-  // ServoControl(180,180);
-  // delay(5000);
+
 }
 
 void ServoControl(int x, int y){
   Serial.println(x + "    :   "+ y);
+  x = map(x, -90, 90, 0, 180 );
+  y = map(y, -90, 90, 0, 180 );
   servo_x.write(x);
   servo_y.write(y);
 }

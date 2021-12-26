@@ -41,7 +41,7 @@ def on_message(msg):
     fp.write('nc: '+str(msg['nc'])+'\n')
     fp.write('names: '+msg['names']+'\n')
     fp.write('# Download script/URL (optional)\n')
-    fp.write('download: '+url+'/dataset/'+msg['dataset'])
+    fp.write('download: '+url+'/datasets/'+msg['dataset'])
     fp.close()
 
     dataset = os.listdir('./data')
