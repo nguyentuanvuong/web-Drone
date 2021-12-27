@@ -5,6 +5,10 @@ const camera = document.getElementById('view-Cam');
 const userID = document.getElementById('user_id');
 const btnPredict = document.getElementById('btn_predict');
 
+const temp = document.getElementById('temp');
+const humi = document.getElementById('humi');
+const mois = document.getElementById('mois');
+const smoke = document.getElementById('smoke');
 
 const ctx = results.getContext("2d");
 
@@ -111,7 +115,7 @@ var chartSpeed = Highcharts.chart('container-speed', Highcharts.merge(gaugeOptio
         dataLabels: {
             format:
                 '<div style="text-align:center">' +
-                '<span style="font-size:45px">{y} %</span><br/>' +
+                '<span style="font-size:40px">{y} %</span><br/>' +
                 // '<span style="font-size:12px;opacity:0.4">km/h</span>' +
                 '</div>'
         },
@@ -307,13 +311,10 @@ async function Serial() {
                     baudRate: 9600
                 });
 
-
                 const decoder = new TextDecoderStream();
                 port.readable.pipeTo(decoder.writable);
                 const inputStream = decoder.readable;
                 const reader = inputStream.getReader();
-
-
 
                 userID.disabled = true;
                 console.log(userID.value);
@@ -360,16 +361,23 @@ async function Serial() {
 }
 
 async function loop(req) {
-    if(req.event_name == 'sensor-value'){
+    if (req.event_name == 'sensor-value') {
+        temp.innerHTML = req.body[0];
+        humi.innerHTML = req.body[1];
+        mois.innerHTML = req.body[2];
+        smoke.innerHTML = req.body[3];
+
         prediction(req.body)
     }
 }
 
 function test() {
     setInterval(() => {
+        
         var sensor = [getRandomInt(30), getRandomInt(100), 0.26, getRandomInt(2)];
-        // console.log(sensor);
         sendGateway('sensor-value', sensor);
+
+
         if (fire_position) {
             sendGateway('fire_position', fire_position);
             fire_position = undefined;
@@ -389,22 +397,7 @@ async function test_prediction() {
     const input = sensor.value;
     const strInput = input.split(" ");
 
-    console.log(strInput)
-    const numInput = strInput.map(ele => {
-        return parseInt(ele);
-    });
-
-    const result = await modelSenor.predict(tf.tensor(numInput, [1, numInput.length])).arraySync();
-
-    var predicVal = result[0];
-    predicVal = predicVal[1];
-    predicVal = predicVal.toFixed(2);
-    predicVal *= 100;
-
-    if (chartSpeed) {
-        const point = chartSpeed.series[0].points[0];
-        point.update(predicVal);
-    }
+    prediction(strInput);
 
 }
 
@@ -413,22 +406,18 @@ async function prediction(strInput) {
     const numInput = strInput.map(ele => {
         return parseInt(ele);
     });
-    const result = await modelSenor.predict(tf.tensor(numInput, [1, numInput.length])).arraySync();
 
-    var predicVal = result[0];
-    predicVal = predicVal[1];
-    predicVal = predicVal.toFixed(2);
-    predicVal *= 100;
+    var result = await modelSenor.predict(tf.tensor(numInput, [1, numInput.length])).arraySync()[0];
+    result = result[1];
+    result = result.toFixed(2);
+    result *= 100;
 
     if (chartSpeed) {
         const point = chartSpeed.series[0].points[0];
-        point.update(predicVal);
+        point.update(result);
     }
 
 }
-
-
-
 
 async function sendGateway(event, msg) {
     if (msg && port) {

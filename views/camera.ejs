@@ -30,35 +30,35 @@
                 <div class="row m-1" style="background: #f5f5f5;">
                     <h1 class="col-2 m-2"><i class="bi bi-thermometer"></i></h1>
                     <div class="col-8 mt-2">
-                        <h4>23 &degC</h4>
+                        <h4><span id="temp">00</span> &degC</h4>
                         <p>temperature</p>
                     </div>
                 </div>
                 <div class="row m-1" style="background: #f5f5f5; ">
                     <h1 class="col-2 m-2"><i class="bi bi-speedometer"></i></h1>
                     <div class="col-8 mt-2">
-                        <h4>60 %</h4>
+                        <h4><span id="humi">00</span> %</h4>
                         <p>humidity</p>
                     </div>
                 </div>
                 <div class="row m-1" style="background: #f5f5f5;">
                     <h1 class="col-2 m-2"><i class="bi bi-speedometer2"></i></h1>
-                    <div  class="col-8 mt-2">
-                        <h4>40 %</h4>
+                    <div class="col-8 mt-2">
+                        <h4><span id="mois">00</span> %</h4>
                         <p>surface moisture</p>
                     </div>
                 </div>
                 <div class="row m-1" style="background: #f5f5f5;">
                     <h1 class="col-2 m-2"><i class="bi bi-wind"></i></h1>
                     <div class="col-8 mt-2">
-                        <h4>0</h4>
+                        <h4><span id="smoke">0</span></h4>
                         <p>smoke</p>
                     </div>
                 </div>
                 <figure class="highcharts-figure">
-                    <div id="container-speed" class="chart-container"  style="height: 200px;"></div>
+                    <div id="container-speed" class="chart-container" style="height: 200px;"></div>
                 </figure>
-                <div >
+                <div style="display: none;">
                     <input class="form-control" type="text" id="sensor" value="26.65 92 0.26 1">
                     <button id="btn_predict" class="btn btn-primary">Predict</button>
                 </div>
