@@ -11,6 +11,11 @@ router.get('/connect-camera', (req, res) => {
 router.get('/Training', (req, res) => {
   res.render('Training');
 });
+
+router.get('/test-models', (req, res) => {
+  res.render('testModels');
+});
+
 router.get('/ALlCam', (req, res) => {
   res.render('ALlCam');
 });
