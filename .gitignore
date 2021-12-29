@@ -5,6 +5,5 @@ package-lock.json
 img
 # uploads
 config
-models
 .vscode
 # .env
