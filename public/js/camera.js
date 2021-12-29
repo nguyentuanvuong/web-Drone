@@ -133,7 +133,7 @@ var chartSpeed = Highcharts.chart('container-speed', Highcharts.merge(gaugeOptio
 async function load(weights, weightsSensor) {
     model = await tf.loadGraphModel(weights);
     modelSenor = await tf.loadLayersModel(weightsSensor);
-    modelSenor.summary();
+    // modelSenor.summary();
     viewListCamera();
 }
 
@@ -291,6 +291,7 @@ const drawBox = (res) => {
 function activate() {
     document.getElementById('block-test').style.display = "";
     document.getElementById('connect').removeChild(btnConnect);
+    userID.disabled = true;
     const image = new Image(1260, 710);
     image.onload = drawImageActualSize;
     image.src = 'img/nocam/noCamera1.jpg';
@@ -316,8 +317,7 @@ async function Serial() {
                 const inputStream = decoder.readable;
                 const reader = inputStream.getReader();
 
-                userID.disabled = true;
-                console.log(userID.value);
+
 
                 activate();
                 test();
@@ -332,14 +332,12 @@ async function Serial() {
                         var text = Array.from(rdata);
                         var n = text.length;
                         if (text[n - 1] == '\n') {
-                            PrintSerial('Serial Read: ' + rdata + '\n');
+                            PrintSerial('Serial Read: ' + rdata);
                             try {
                                 const req = JSON.parse(rdata);
                                 loop(req);
                             }
-                            catch (error) {
-
-                            }
+                            catch (error) {}
                             rdata = '';
                         }
                     }
@@ -350,14 +348,14 @@ async function Serial() {
                 }
             }
             catch (error) {
-                PrintSerial(error + '\n');
+                PrintSerial(error);
             }
-        } else {
+        }
+        else {
             alert('Web Serial API not supported.');
         }
     }
-    else PrintSerial('Vui lòng nhập User ID \n');
-
+    else alert('Vui lòng nhập User ID');
 }
 
 async function loop(req) {
@@ -366,25 +364,27 @@ async function loop(req) {
         humi.innerHTML = req.body[1];
         mois.innerHTML = req.body[2];
         smoke.innerHTML = req.body[3];
-
-        prediction(req.body)
-    }
-}
-
-function test() {
-    setInterval(() => {
-        
-        var sensor = [getRandomInt(30), getRandomInt(100), 0.26, getRandomInt(2)];
-        sendGateway('sensor-value', sensor);
-
+        const pr = await prediction(req.body);
+        if (chartSpeed) {
+            const point = chartSpeed.series[0].points[0];
+            point.update(pr);
+        }
+        if (pr > 80) {
+            sendZalo(pr);
+        }
 
         if (fire_position) {
             sendGateway('fire_position', fire_position);
             fire_position = undefined;
         }
+    }
+}
+
+function test() {
+    setInterval(() => {
+        var sensor = [getRandomInt(30), getRandomInt(100), 0.26, getRandomInt(2)];
+        sendGateway('sensor-value', sensor);
     }, 2000);
-
-
 }
 
 function getRandomInt(max) {
@@ -392,7 +392,6 @@ function getRandomInt(max) {
 }
 
 async function test_prediction() {
-
     const sensor = document.getElementById('sensor');
     const input = sensor.value;
     const strInput = input.split(" ");
@@ -402,7 +401,6 @@ async function test_prediction() {
 }
 
 async function prediction(strInput) {
-    console.log(strInput)
     const numInput = strInput.map(ele => {
         return parseInt(ele);
     });
@@ -412,10 +410,16 @@ async function prediction(strInput) {
     result = result.toFixed(2);
     result *= 100;
 
-    if (chartSpeed) {
-        const point = chartSpeed.series[0].points[0];
-        point.update(result);
-    }
+    // if (chartSpeed) {
+    //     const point = chartSpeed.series[0].points[0];
+    //     point.update(result);
+    // }
+
+    // if (result > 80) {
+    //     sendZalo(result);
+    // }
+
+    return result;
 
 }
 
@@ -425,19 +429,20 @@ async function sendGateway(event, msg) {
         var frame = {};
         frame.event_name = event;
         frame.body = msg;
-
-        // console.log(JSON.stringify(frame));
-
         const encoder = new TextEncoder();
         const writer = port.writable.getWriter();
         await writer.write(encoder.encode(`${JSON.stringify(frame)}\n`));
         writer.releaseLock();
-        PrintSerial('Serial Write: ' + JSON.stringify(frame) + '\n');
+        // PrintSerial('Serial Write: ' + JSON.stringify(frame) + '\n');
     }
-    else PrintSerial('no data or port \n');
+    else PrintSerial('no data or port');
 }
 
-function sendZalo() {
+function sendZalo(pr) {
+
+    const msg = `[Emergency Warning] Today December 24, 2021, current temperature is ${temp.textContent}°C , humidity is ${humi.textContent}% and smoke is detected, potential ${pr}% fire hazard. Please check immediately `
+    // console.log(userID.value);
+    console.log(msg);
     // fetch('https://openapi.zalo.me/v2.0/oa/message', {
     //     method: 'POST',
     //     headers: {
@@ -446,10 +451,10 @@ function sendZalo() {
     //     },
     //     body: JSON.stringify({
     //         "recipient": {
-    //             "user_id": "3469747508247772258",
+    //             "user_id": userID.value,
     //         },
     //         "message": {
-    //             "text": `[Emergency Warning] Today December 24, 2021, current room temperature is 31, humidity is 70% and smoke is detected, potential fire hazard. Please check immediately `,
+    //             "text": msg,
     //             // "quote_message_id":data.message.msg_id
     //         }
     //     })
@@ -457,14 +462,13 @@ function sendZalo() {
     //     .then(response => response.json())
     //     .then(dt => {
     //         console.log(dt);
-    //         res.send(dt);
     //     });
 }
 
 function PrintSerial(msg) {
     const log = document.getElementById('Serial');
     log.scrollTop = log.scrollHeight;
-    log.append(msg);
+    log.append(msg+'\n');
 }
 
 function mapValue(x, in_min, in_max, out_min, out_max) {
