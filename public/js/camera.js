@@ -17,22 +17,22 @@ btnConnect.addEventListener('click', Serial);
 
 const weightsSensor = '/neural/test_model/model.json';
 
-const weights = 'yolov5s_web_model/model.json';
-const [modelWeight, modelHeight] = [256, 256];
-const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-    'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-    'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-    'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-    'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-    'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-    'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-    'hair drier', 'toothbrush'
-]
+// const weights = 'yolov5s_web_model/model.json';
+// const [modelWeight, modelHeight] = [256, 256];
+// const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+//     'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+//     'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+//     'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+//     'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+//     'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+//     'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+//     'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+//     'hair drier', 'toothbrush'
+// ]
 
-// const weights = 'fire_web_model/model.json';
-// const [modelWeight, modelHeight] = [320, 320];
-// const names = ['fire']
+const weights = 'fire_web_model/model.json';
+const [modelWeight, modelHeight] = [320, 320];
+const names = ['fire']
 
 var model = undefined;
 var modelSenor = undefined;
@@ -260,6 +260,8 @@ const drawBox = (res) => {
 
         if (classes_data[i] == 0) {
 
+
+
             var fire_x = (x1 + x2) / 2;
             var fire_y = (y1 + y2) / 2;
 
@@ -268,20 +270,21 @@ const drawBox = (res) => {
             ctx.lineWidth = 4;
             ctx.fillText('.', fire_x, fire_y);
 
-            fire_x = mapValue(fire_x, 0, results.width, 85, 95);
-            fire_y = mapValue(fire_y, 0, results.height, 35, 95);
+            // fire_x = mapValue(fire_x, 0, results.width, 85, 95);
+            // fire_y = mapValue(fire_y, 0, results.height, 35, 95);
 
-            fire_x = fire_x.toFixed(0);
-            fire_y = fire_y.toFixed(0);
+            // fire_x = fire_x.toFixed(0);
+            // fire_y = fire_y.toFixed(0);
+            console.log(MathLocation(fire_x, fire_y));
 
-            fire_position = JSON.parse(`
-                {
-                    "position":{
-                        "x": ${fire_x},
-                        "y": ${fire_y}
-                    }
-                }
-            `);
+            // fire_position = JSON.parse(`
+            //     {
+            //         "position":{
+            //             "x": ${fire_x},
+            //             "y": ${fire_y}
+            //         }
+            //     }
+            // `);
             return;
 
         }
@@ -337,7 +340,7 @@ async function Serial() {
                                 const req = JSON.parse(rdata);
                                 loop(req);
                             }
-                            catch (error) {}
+                            catch (error) { }
                             rdata = '';
                         }
                     }
@@ -374,7 +377,9 @@ async function loop(req) {
         }
 
         if (fire_position) {
-            sendGateway('fire_position', fire_position);
+            // sendGateway('fire_position', fire_position);
+
+
             fire_position = undefined;
         }
     }
@@ -465,10 +470,30 @@ function sendZalo(pr) {
     //     });
 }
 
+
+function MathLocation(x, y) {
+    const AD = 1000;
+    const EH = 60;
+    const AH = AD / 2;
+    const Hx = (AH - x);
+
+    const HK = Math.sqrt((Hx * Hx) + (y * y));
+    var H = (Math.atan(Hx / y)) * (180 / Math.PI);
+    var E = (Math.atan(HK / EH)) * (180 / Math.PI);
+
+    H = H.toFixed(0);
+    E = E.toFixed(0);
+
+    // console.log('góc E = ' + E);
+    // console.log('góc H = ' + H);
+
+    return { H, E };
+}
+
 function PrintSerial(msg) {
     const log = document.getElementById('Serial');
     log.scrollTop = log.scrollHeight;
-    log.append(msg+'\n');
+    log.append(msg + '\n');
 }
 
 function mapValue(x, in_min, in_max, out_min, out_max) {
