@@ -1,14 +1,19 @@
 const btnConnect = document.getElementById('btn_connect');
 const videoView = document.createElement('video');
-const results = document.getElementById('results');
+// const results = document.getElementById('results');
+const results = document.createElement('canvas');
 const camera = document.getElementById('view-Cam');
 const userID = document.getElementById('user_id');
 const btnPredict = document.getElementById('btn_predict');
+const ViewResults = document.getElementById('ViewResults');
+const config = document.getElementById('config');
 
 const temp = document.getElementById('temp');
 const humi = document.getElementById('humi');
 const mois = document.getElementById('mois');
 const smoke = document.getElementById('smoke');
+
+const socket = io();
 
 const ctx = results.getContext("2d");
 
@@ -17,29 +22,47 @@ btnConnect.addEventListener('click', Serial);
 
 const weightsSensor = '/neural/test_model/model.json';
 
-// const weights = 'yolov5s_web_model/model.json';
-// const [modelWeight, modelHeight] = [256, 256];
-// const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-//     'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-//     'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-//     'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-//     'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-//     'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-//     'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-//     'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-//     'hair drier', 'toothbrush'
-// ]
+const weights = 'yolov5s_web_model/model.json';
+const [modelWeight, modelHeight] = [256, 256];
+const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+    'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+    'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+    'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+    'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+    'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+    'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+    'hair drier', 'toothbrush'
+]
 
-const weights = 'fire_web_model/model.json';
-const [modelWeight, modelHeight] = [320, 320];
-const names = ['fire']
+// const weights = 'fire_web_model/model.json';
+// const [modelWeight, modelHeight] = [320, 320];
+// const names = ['fire']
 
 var model = undefined;
 var modelSenor = undefined;
 var listCamera = undefined;
 var port = undefined;
 var fire_position = undefined;
-// activate();
+var fire_w = undefined;
+var fire_h = undefined;
+
+config.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const url = form.action;
+    const formData = new FormData(form);
+    const plainFormData = Object.fromEntries(formData.entries());
+    fire_w = plainFormData.width;
+    fire_h = plainFormData.height;
+});
+
+activate();
+
+socket.on('connect', () => {
+    console.log(socket.id);
+});
+
 load(weights, weightsSensor);
 
 var gaugeOptions = {
@@ -126,7 +149,15 @@ var chartSpeed = Highcharts.chart('container-speed', Highcharts.merge(gaugeOptio
 
 }));
 
+// async function config(event) {
+//     event.preventDefault();
+//     const form = event.currentTarget;
+//     const url = form.action;
+//     const formData = new FormData(form);
+//     const plainFormData = Object.fromEntries(formData.entries());
+//     console.log(JSON.stringify(plainFormData));
 
+// }
 
 
 
@@ -205,15 +236,14 @@ function predictWebcam() {
 }
 
 const drawBox = (res) => {
-    results.width = camera.offsetWidth;
-    results.height = results.width * 9 / 16
+    // // results.width = camera.offsetWidth;
+    // results.height = results.width * 9 / 16
     ctx.clearRect(0, 0, results.width, results.height);
     ctx.drawImage(videoView, 0, 0, results.width, results.height);
 
-    ctx.font = "80px Arial";
+    ctx.font = "40px Arial";
     ctx.fillStyle = "#FFFF00";
-    ctx.lineWidth = 1;
-    ctx.fillText('+', results.width / 2 - 25, 30);
+    ctx.fillText('|', results.width / 2, 0);
 
     const [boxes, scores, classes, valid_detections] = res;
     const boxes_data = boxes.dataSync();
@@ -235,7 +265,6 @@ const drawBox = (res) => {
 
     ctx.font = "20px Arial";
     ctx.fillStyle = "#00FFFF";
-    ctx.lineWidth = 4;
     ctx.fillText(`${result} `, 5, 20);
 
     for (i = 0; i < valid_detections_data; ++i) {
@@ -250,12 +279,11 @@ const drawBox = (res) => {
         const score = scores_data[i].toFixed(2);
 
         ctx.strokeStyle = "#00FFFF";
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 2;
         ctx.strokeRect(x1, y1, width, height);
 
-        ctx.font = "20px Arial";
+        ctx.font = "15px Arial";
         ctx.fillStyle = "#00FFFF";
-        ctx.lineWidth = 4;
         ctx.fillText(`${klass} ${score}`, x1, y1);
 
         if (classes_data[i] == 0) {
@@ -265,9 +293,8 @@ const drawBox = (res) => {
             var fire_x = (x1 + x2) / 2;
             var fire_y = (y1 + y2) / 2;
 
-            ctx.font = "80px Arial";
+            ctx.font = "40px Arial";
             ctx.fillStyle = "#FF0000";
-            ctx.lineWidth = 4;
             ctx.fillText('.', fire_x, fire_y);
 
             // fire_x = mapValue(fire_x, 0, results.width, 85, 95);
@@ -297,10 +324,15 @@ function activate() {
     userID.disabled = true;
     const image = new Image(1260, 710);
     image.onload = drawImageActualSize;
-    image.src = 'img/nocam/noCamera1.jpg';
+    image.src = 'img/nocam/noCamera.jpg';
+
+    const stream = results.captureStream(25);
+    ViewResults.srcObject = stream;
+    // ViewResults.play();
 
     function drawImageActualSize() {
-        results.width = camera.offsetWidth;
+        // results.width = camera.offsetWidth;
+        results.width = 640;
         results.height = results.width * 9 / 16
         ctx.drawImage(this, 0, 0, results.width, results.height);
     }
@@ -320,15 +352,11 @@ async function Serial() {
                 const inputStream = decoder.readable;
                 const reader = inputStream.getReader();
 
-
-
                 activate();
                 test();
 
                 var rdata = '';
                 while (true) {
-
-                    // console.log(await reader.read());
                     const { value, done } = await reader.read();
                     if (value) {
                         rdata = rdata + value;
@@ -363,10 +391,15 @@ async function Serial() {
 
 async function loop(req) {
     if (req.event_name == 'sensor-value') {
-        temp.innerHTML = req.body[0];
-        humi.innerHTML = req.body[1];
-        mois.innerHTML = req.body[2];
-        smoke.innerHTML = req.body[3];
+        const tempVal = req.body[0];
+        const humiVal = req.body[1];
+        const moisVal = req.body[2];
+        const smokeVal = req.body[3];
+
+        temp.innerHTML = tempVal;
+        humi.innerHTML = humiVal;
+        mois.innerHTML = moisVal;
+        smoke.innerHTML = smokeVal;
         const pr = await prediction(req.body);
         if (chartSpeed) {
             const point = chartSpeed.series[0].points[0];
@@ -382,6 +415,16 @@ async function loop(req) {
 
             fire_position = undefined;
         }
+        const imgString = results.toDataURL();
+        socket.emit('results', {
+            imgString,
+            tempVal,
+            humiVal,
+            moisVal,
+            smokeVal,
+            pr
+
+        });
     }
 }
 
@@ -472,8 +515,16 @@ function sendZalo(pr) {
 
 
 function MathLocation(x, y) {
-    const AD = 1000;
-    const EH = 60;
+    // console.log(x * 0.0264583333);
+
+    var fire_0 = results.width * 0.0264583333;
+    fire_0 = fire_w/fire_0;
+ 
+    x = x * fire_0;
+    y = y * fire_0;
+
+    const AD = fire_w;
+    const EH = fire_h;
     const AH = AD / 2;
     const Hx = (AH - x);
 
