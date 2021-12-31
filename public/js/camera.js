@@ -6,7 +6,8 @@ const camera = document.getElementById('view-Cam');
 const userID = document.getElementById('user_id');
 const btnPredict = document.getElementById('btn_predict');
 const ViewResults = document.getElementById('ViewResults');
-const config = document.getElementById('config');
+const fire_w = document.getElementById('fire-w');
+const fire_h = document.getElementById('fire-h');
 
 const temp = document.getElementById('temp');
 const humi = document.getElementById('humi');
@@ -22,42 +23,31 @@ btnConnect.addEventListener('click', Serial);
 
 const weightsSensor = '/neural/test_model/model.json';
 
-const weights = 'yolov5s_web_model/model.json';
-const [modelWeight, modelHeight] = [256, 256];
-const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-    'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-    'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-    'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-    'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-    'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-    'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-    'hair drier', 'toothbrush'
-]
+// const weights = 'yolov5s_web_model/model.json';
+// const [modelWeight, modelHeight] = [256, 256];
+// const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+//     'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+//     'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+//     'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+//     'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+//     'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+//     'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+//     'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+//     'hair drier', 'toothbrush'
+// ]
 
-// const weights = 'fire_web_model/model.json';
-// const [modelWeight, modelHeight] = [320, 320];
-// const names = ['fire']
+const weights = 'fire_web_model/model.json';
+const [modelWeight, modelHeight] = [320, 320];
+const names = ['fire']
 
 var model = undefined;
 var modelSenor = undefined;
 var listCamera = undefined;
 var port = undefined;
 var fire_position = undefined;
-var fire_w = undefined;
-var fire_h = undefined;
 
-config.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const url = form.action;
-    const formData = new FormData(form);
-    const plainFormData = Object.fromEntries(formData.entries());
-    fire_w = plainFormData.width;
-    fire_h = plainFormData.height;
-});
 
-activate();
+// activate();
 
 socket.on('connect', () => {
     console.log(socket.id);
@@ -148,17 +138,6 @@ var chartSpeed = Highcharts.chart('container-speed', Highcharts.merge(gaugeOptio
     }]
 
 }));
-
-// async function config(event) {
-//     event.preventDefault();
-//     const form = event.currentTarget;
-//     const url = form.action;
-//     const formData = new FormData(form);
-//     const plainFormData = Object.fromEntries(formData.entries());
-//     console.log(JSON.stringify(plainFormData));
-
-// }
-
 
 
 async function load(weights, weightsSensor) {
@@ -293,29 +272,36 @@ const drawBox = (res) => {
             var fire_x = (x1 + x2) / 2;
             var fire_y = (y1 + y2) / 2;
 
-            ctx.font = "40px Arial";
-            ctx.fillStyle = "#FF0000";
-            ctx.fillText('.', fire_x, fire_y);
+            // var fire_x = 320;
+            // var fire_y = 10;
 
-            // fire_x = mapValue(fire_x, 0, results.width, 85, 95);
-            // fire_y = mapValue(fire_y, 0, results.height, 35, 95);
+            // ctx.font = "40px Arial";
+            // ctx.fillStyle = "#FF0000";
+            // ctx.fillText('x', fire_x, fire_y);
 
-            // fire_x = fire_x.toFixed(0);
-            // fire_y = fire_y.toFixed(0);
-            console.log(MathLocation(fire_x, fire_y));
-
-            // fire_position = JSON.parse(`
-            //     {
-            //         "position":{
-            //             "x": ${fire_x},
-            //             "y": ${fire_y}
-            //         }
-            //     }
-            // `);
+            const xy = MathLocation(fire_x, fire_y);
+            fire_position = JSON.parse(`
+                {
+                    "position":{
+                        "x": ${xy.H},
+                        "y": ${xy.E}
+                    }
+                }
+            `);
             return;
 
         }
     }
+
+    // const xy = MathLocation(320, 0);
+    // fire_position = JSON.parse(`
+    //             {
+    //                 "position":{
+    //                     "x": ${xy.H},
+    //                     "y": ${xy.E}
+    //                 }
+    //             }
+    //         `);
 }
 
 function activate() {
@@ -410,7 +396,7 @@ async function loop(req) {
         }
 
         if (fire_position) {
-            // sendGateway('fire_position', fire_position);
+            sendGateway('fire_position', fire_position);
 
 
             fire_position = undefined;
@@ -515,28 +501,30 @@ function sendZalo(pr) {
 
 
 function MathLocation(x, y) {
-    // console.log(x * 0.0264583333);
 
-    var fire_0 = results.width * 0.0264583333;
-    fire_0 = fire_w/fire_0;
- 
-    x = x * fire_0;
-    y = y * fire_0;
+    x = x * 0.0264583333;
+    y = y * 0.0264583333;
 
-    const AD = fire_w;
-    const EH = fire_h;
+    x = x.toFixed(0);
+    y = y.toFixed(0);
+
+    console.log(x+':'+y);
+
+    const AD = fire_w.value;
+    const EH = fire_h.value;
     const AH = AD / 2;
     const Hx = (AH - x);
 
     const HK = Math.sqrt((Hx * Hx) + (y * y));
+
     var H = (Math.atan(Hx / y)) * (180 / Math.PI);
     var E = (Math.atan(HK / EH)) * (180 / Math.PI);
 
     H = H.toFixed(0);
     E = E.toFixed(0);
 
-    // console.log('góc E = ' + E);
-    // console.log('góc H = ' + H);
+    console.log('góc E = ' + E);
+    console.log('góc H = ' + H);
 
     return { H, E };
 }
