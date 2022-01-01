@@ -391,14 +391,12 @@ async function loop(req) {
             const point = chartSpeed.series[0].points[0];
             point.update(pr);
         }
-        if (pr > 80) {
+        if (pr > 80 && fire_position) {
             sendZalo(pr);
         }
 
         if (fire_position) {
             sendGateway('fire_position', fire_position);
-
-
             fire_position = undefined;
         }
         const imgString = results.toDataURL();
@@ -459,7 +457,6 @@ async function prediction(strInput) {
 
 async function sendGateway(event, msg) {
     if (msg && port) {
-        // sendZalo();
         var frame = {};
         frame.event_name = event;
         frame.body = msg;
@@ -477,26 +474,26 @@ function sendZalo(pr) {
     const msg = `[Emergency Warning] Today December 24, 2021, current temperature is ${temp.textContent}°C , humidity is ${humi.textContent}% and smoke is detected, potential ${pr}% fire hazard. Please check immediately `
     // console.log(userID.value);
     console.log(msg);
-    // fetch('https://openapi.zalo.me/v2.0/oa/message', {
-    //     method: 'POST',
-    //     headers: {
-    //         'access_token': 'nCtbMQ-e2Yl9o-THewmF9CFAu5UejNnWcDJYMFlqRMhctDPCtkvaVFhozMcQncz9h_JWVuViRcoxte95eTPdK8Blqdovn7PQqwtWGBUU13MtbvO7lRu11DkjbZFlhGays9wy7REa5XBOe8OAowuJAkt8crsAj01TaAQ99h2701MCXBarkB8H5O-9W3ckwcKpoyw1A_Fj1JpLwkb8ukyPKCJjgdVEop9lpVYzIDx-0MV4_kjtpkXKKkYFstJvhMa5_hFiFkItVpRdjkeopRv15DIVoI_afM84m8AE1CBd5n5rKb7TGgMo2oW ',
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         "recipient": {
-    //             "user_id": userID.value,
-    //         },
-    //         "message": {
-    //             "text": msg,
-    //             // "quote_message_id":data.message.msg_id
-    //         }
-    //     })
-    // })
-    //     .then(response => response.json())
-    //     .then(dt => {
-    //         console.log(dt);
-    //     });
+    fetch('https://openapi.zalo.me/v2.0/oa/message', {
+        method: 'POST',
+        headers: {
+            'access_token': 'nCtbMQ-e2Yl9o-THewmF9CFAu5UejNnWcDJYMFlqRMhctDPCtkvaVFhozMcQncz9h_JWVuViRcoxte95eTPdK8Blqdovn7PQqwtWGBUU13MtbvO7lRu11DkjbZFlhGays9wy7REa5XBOe8OAowuJAkt8crsAj01TaAQ99h2701MCXBarkB8H5O-9W3ckwcKpoyw1A_Fj1JpLwkb8ukyPKCJjgdVEop9lpVYzIDx-0MV4_kjtpkXKKkYFstJvhMa5_hFiFkItVpRdjkeopRv15DIVoI_afM84m8AE1CBd5n5rKb7TGgMo2oW ',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "recipient": {
+                "user_id": userID.value,
+            },
+            "message": {
+                "text": msg,
+                // "quote_message_id":data.message.msg_id
+            }
+        })
+    })
+        .then(response => response.json())
+        .then(dt => {
+            console.log(dt);
+        });
 }
 
 

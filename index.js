@@ -122,10 +122,10 @@ httpServer.listen(httpPort, () => {
     console.log('http listening on *:', httpPort);
 });
 
-(async function() {
-    const url = await ngrok.connect({
-        addr: httpPort,
-        authtoken: process.env.NGROK_TOKEN
-    });
-    console.log(url);
-  })();
+// (async function() {
+//     const url = await ngrok.connect({
+//         addr: httpPort,
+//         authtoken: process.env.NGROK_TOKEN
+//     });
+//     console.log(url);
+//   })();
