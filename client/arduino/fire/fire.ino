@@ -7,7 +7,6 @@
 Servo servo_x;
 Servo servo_y;
 
-
 DynamicJsonDocument data(100);
 
 long frequency = 433E6; // LoRa Frequency
@@ -19,6 +18,8 @@ byte localAddress = 0xFF; // address of this device
 byte destination = 0xBB;  // destination to send
 byte msgCount = 0;        // count of outgoing messages
 
+int pin_AL = 3;
+int pin_RL = 4;
 int pin_servo_x = 5;
 int pin_servo_y = 6;
 
@@ -27,6 +28,8 @@ void setup()
   Serial.begin(9600);
   servo_x.attach(pin_servo_x);
   servo_y.attach(pin_servo_y);
+  pinMode(pin_RL, OUTPUT);
+  pinMode(pin_AL, OUTPUT);
   while (!Serial)
     ;
   LoRa.setPins(csPin, resetPin, irqPin);
@@ -37,7 +40,7 @@ void setup()
       ;
   }
   Serial.println("LoRa init succeeded.");
-  ServoControl(0,0);
+  ServoControl(0, 0, 0, 0);
   LoRa.onReceive(onReceive);
   LoRa.onTxDone(onTxDone);
   LoRa_rxMode();
@@ -45,16 +48,18 @@ void setup()
 
 void loop()
 {
-
 }
- 
-void ServoControl(int x, int y){
-  Serial.println(x + "    :   "+ y);
-  x = map(x, -90, 90, 0, 180 );
-  y = map(y, -90, 90, 0, 180 );
+
+void ServoControl(int x, int y, int rl, int al)
+{
+  Serial.println(x + "    :   " + y);
+  x = map(x, -90, 90, 0, 180);
+  y = map(y, -90, 90, 0, 180);
 
   servo_x.write(x);
   servo_y.write(y);
+  digitalWrite(pin_AL, al);
+  digitalWrite(pin_RL, rl);
 }
 
 void LoRa_rxMode()
@@ -108,25 +113,29 @@ void onReceive(int packetSize)
     Serial.println("This message is not for me.");
     return; // skip rest of function
   }
-  Serial.println("Received from: 0x" + String(sender, HEX));
-  Serial.println("Sent to: 0x" + String(recipient, HEX));
-  Serial.println("Message ID: " + String(incomingMsgId));
-  Serial.println("Message length: " + String(incomingLength));
-  Serial.println("Message: " + message);
-  Serial.println("RSSI: " + String(LoRa.packetRssi()));
-  Serial.println("Snr: " + String(LoRa.packetSnr()));
-  Serial.println();
+  // Serial.println("Received from: 0x" + String(sender, HEX));
+  // Serial.println("Sent to: 0x" + String(recipient, HEX));
+  // Serial.println("Message ID: " + String(incomingMsgId));
+  // Serial.println("Message length: " + String(incomingLength));
+  // Serial.println("Message: " + message);
+  // Serial.println("RSSI: " + String(LoRa.packetRssi()));
+  // Serial.println("Snr: " + String(LoRa.packetSnr()));
+  // Serial.println();
 
   DynamicJsonDocument requires(500);
   deserializeJson(requires, message);
 
   String S_x = requires["body"]["position"]["x"];
   String S_y = requires["body"]["position"]["y"];
+  String R_l = requires["body"]["relay"];
+  String A_l = requires["body"]["alarm"];
 
   int x = S_x.toInt();
-  int y =S_y.toInt();
-  ServoControl(x,y);
+  int y = S_y.toInt();
+  int Rl = R_l.toInt();
+  int Al = A_l.toInt();
 
+  ServoControl(x, y, Rl, Al);
 }
 
 void onTxDone()

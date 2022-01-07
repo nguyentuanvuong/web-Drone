@@ -122,14 +122,23 @@ void onReceive(int packetSize)
     return;
   if (recipient != localAddress && recipient != localAddress)
     return;
-  Serial.println("Received from: 0x" + String(sender, HEX));
-  Serial.println("Sent to: 0x" + String(recipient, HEX));
-  Serial.println("Message ID: " + String(incomingMsgId));
-  Serial.println("Message length: " + String(incomingLength));
-  Serial.println("Message: " + message);
-  Serial.println("RSSI: " + String(LoRa.packetRssi()));
-  Serial.println("Snr: " + String(LoRa.packetSnr()));
-  Serial.println();
+//  Serial.println("Received from: 0x" + String(sender, HEX));
+//  Serial.println("Sent to: 0x" + String(recipient, HEX));
+//  Serial.println("Message ID: " + String(incomingMsgId));
+//  Serial.println("Message length: " + String(incomingLength));
+//  Serial.println("Message: " + message);
+//  Serial.println("RSSI: " + String(LoRa.packetRssi()));
+//  Serial.println("Snr: " + String(LoRa.packetSnr()));
+//  Serial.println();
+
+
+  DynamicJsonDocument requires(500);
+  deserializeJson(requires, message);
+  String event = requires["event_name"];
+  if (event == "sensor-value") {
+        Serial.println(message);
+  }
+  
 }
 
 void onTxDone()

@@ -23,22 +23,22 @@ btnConnect.addEventListener('click', Serial);
 
 const weightsSensor = '/neural/test_model/model.json';
 
-// const weights = 'yolov5s_web_model/model.json';
-// const [modelWeight, modelHeight] = [256, 256];
-// const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-//     'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-//     'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-//     'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-//     'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-//     'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-//     'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-//     'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-//     'hair drier', 'toothbrush'
-// ]
+const weights = 'yolov5s_web_model/model.json';
+const [modelWeight, modelHeight] = [256, 256];
+const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+    'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+    'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+    'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+    'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+    'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+    'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+    'hair drier', 'toothbrush'
+]
 
-const weights = 'fire_web_model/model.json';
-const [modelWeight, modelHeight] = [320, 320];
-const names = ['fire']
+// const weights = 'fire_web_model/model.json';
+// const [modelWeight, modelHeight] = [320, 320];
+// const names = ['fire']
 
 var model = undefined;
 var modelSenor = undefined;
@@ -285,7 +285,9 @@ const drawBox = (res) => {
                     "position":{
                         "x": ${xy.H},
                         "y": ${xy.E}
-                    }
+                    },
+                    "alarm":0,
+                    "relay":0
                 }
             `);
             return;
@@ -339,7 +341,7 @@ async function Serial() {
                 const reader = inputStream.getReader();
 
                 activate();
-                test();
+                // test();
 
                 var rdata = '';
                 while (true) {
@@ -393,9 +395,11 @@ async function loop(req) {
         }
         if (pr > 80 && fire_position) {
             sendZalo(pr);
+            fire_position.relay = 1
         }
 
         if (fire_position) {
+            console.log(fire_position);
             sendGateway('fire_position', fire_position);
             fire_position = undefined;
         }
@@ -505,7 +509,7 @@ function MathLocation(x, y) {
     x = x.toFixed(0);
     y = y.toFixed(0);
 
-    console.log(x+':'+y);
+    // console.log(x+':'+y);
 
     const AD = fire_w.value;
     const EH = fire_h.value;
@@ -520,8 +524,8 @@ function MathLocation(x, y) {
     H = H.toFixed(0);
     E = E.toFixed(0);
 
-    console.log('góc E = ' + E);
-    console.log('góc H = ' + H);
+    // console.log('góc E = ' + E);
+    // console.log('góc H = ' + H);
 
     return { H, E };
 }
