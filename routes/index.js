@@ -8,6 +8,10 @@ router.get('/connect-camera', (req, res) => {
   res.render('camera');
 });
 
+router.get('/calibration-camera', (req, res) => {
+  res.render('calibration');
+});
+
 router.get('/Training', (req, res) => {
   res.render('Training');
 });

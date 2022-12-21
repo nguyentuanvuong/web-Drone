@@ -7,3 +7,8 @@ img
 config
 .vscode
 # .env
+web-Drone.zip
+*.jpg
+*.mp4
+
+datasets

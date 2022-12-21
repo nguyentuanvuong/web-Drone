@@ -13,7 +13,7 @@ io.connect(url)
 @io.on('dataset')
 def on_message(msg):
     dataset = os.listdir('./data')
-    io.emit('dataset',dataset);
+    io.emit('dataset',dataset)
 
 @io.on('training')
 def on_message(msg):
@@ -32,7 +32,7 @@ def on_message(msg):
 def on_message(msg):
 
     fp = open('./data/'+msg['dataset']+'.yaml', 'w')
-    fp.write('# parent\n# ├── yolov5\n# └── datasets\n#     └── coco  ← downloads here\n')
+    fp.write('# parent\n# ├── yolov5\n# └── datasets\n#     └── coco  ← downloads here\n')  
     fp.write('path: ../datasets/'+msg['path']+' # dataset root dir\n')
     fp.write('train: '+msg['train']+' # train images (relative to path) 128 images\n')
     fp.write('val: '+msg['val']+' # val images (relative to path) 128 images\n')

@@ -4,6 +4,7 @@ const videoView = document.createElement('video');
 const results = document.createElement('canvas');
 const camera = document.getElementById('view-Cam');
 const userID = document.getElementById('user_id');
+const btnPredict = document.getElementById('btn_predict');
 const ViewResults = document.getElementById('ViewResults');
 const fire_w = document.getElementById('fire-w');
 const fire_h = document.getElementById('fire-h');
@@ -17,25 +18,27 @@ const socket = io();
 
 const ctx = results.getContext("2d");
 
+btnPredict.addEventListener('click', test_prediction);
+btnConnect.addEventListener('click', Serial);
 
 const weightsSensor = '/neural/test_model/model.json';
 
-const weights = '/yolov5s_web_model/model.json';
-const [modelWeight, modelHeight] = [256, 256];
-const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-    'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-    'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-    'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-    'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-    'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-    'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-    'hair drier', 'toothbrush'
-]
+// const weights = 'yolov5s_web_model/model.json';
+// const [modelWeight, modelHeight] = [256, 256];
+// const names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+//     'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+//     'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+//     'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+//     'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+//     'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+//     'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+//     'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+//     'hair drier', 'toothbrush'
+// ]
 
-// const weights = 'fire_web_model/model.json';
-// const [modelWeight, modelHeight] = [320, 320];
-// const names = ['fire']
+const weights = 'fire_web_model/model.json';
+const [modelWeight, modelHeight] = [320, 320];
+const names = ['fire']
 
 var model = undefined;
 var modelSenor = undefined;
@@ -44,7 +47,7 @@ var port = undefined;
 var fire_position = undefined;
 
 
-activate();
+// activate();
 
 socket.on('connect', () => {
     console.log(socket.id);
@@ -52,6 +55,89 @@ socket.on('connect', () => {
 
 load(weights, weightsSensor);
 
+var gaugeOptions = {
+    chart: {
+        type: 'solidgauge'
+    },
+    title: null,
+    pane: {
+        center: ['50%', '80%'],
+        size: '110%',
+        startAngle: -90,
+        endAngle: 90,
+        background: {
+            backgroundColor:
+                Highcharts.defaultOptions.legend.backgroundColor || '#EEE',
+            innerRadius: '60%',
+            outerRadius: '100%',
+            shape: 'arc'
+        }
+    },
+    exporting: {
+        enabled: false
+    },
+    tooltip: {
+        enabled: false
+    },
+
+    // the value axis
+    yAxis: {
+        stops: [
+            [0.1, '#55BF3B'], // green
+            [0.5, '#DDDF0D'], // yellow
+            [0.9, '#DF5353'] // red
+        ],
+        lineWidth: 0,
+        tickWidth: 0,
+        minorTickInterval: null,
+        tickAmount: 2,
+        title: {
+            y: -30
+        },
+        labels: {
+            y: 20
+        }
+    },
+
+    plotOptions: {
+        solidgauge: {
+            dataLabels: {
+                y: 10,
+                borderWidth: 0,
+                useHTML: true
+            }
+        }
+    }
+};
+
+// The speed gauge
+var chartSpeed = Highcharts.chart('container-speed', Highcharts.merge(gaugeOptions, {
+    yAxis: {
+        min: 0,
+        max: 100,
+        title: {
+            text: 'predict'
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'Speed',
+        data: [0],
+        dataLabels: {
+            format:
+                '<div style="text-align:center">' +
+                '<span style="font-size:40px">{y} %</span><br/>' +
+                // '<span style="font-size:12px;opacity:0.4">km/h</span>' +
+                '</div>'
+        },
+        tooltip: {
+            valueSuffix: ' km/h'
+        }
+    }]
+
+}));
 
 async function load(weights, weightsSensor) {
     model = await tf.loadGraphModel(weights);
@@ -178,16 +264,51 @@ const drawBox = (res) => {
         ctx.fillStyle = "#00FFFF";
         ctx.fillText(`${klass} ${score}`, x1, y1);
 
+        if (classes_data[i] == 0) {
+
+
+
+            var fire_x = (x1 + x2) / 2;
+            var fire_y = (y1 + y2) / 2;
+
+            // var fire_x = 320;
+            // var fire_y = 10;
+
+            // ctx.font = "40px Arial";
+            // ctx.fillStyle = "#FF0000";
+            // ctx.fillText('x', fire_x, fire_y);
+
+            const xy = MathLocation(fire_x, fire_y);
+            fire_position = JSON.parse(`
+                {
+                    "position":{
+                        "x": ${xy.H},
+                        "y": ${xy.E}
+                    },
+                    "alarm":0,
+                    "relay":0
+                }
+            `);
+            return;
+
+        }
     }
 
-    // sendImg();
-
+    // const xy = MathLocation(320, 0);
+    // fire_position = JSON.parse(`
+    //             {
+    //                 "position":{
+    //                     "x": ${xy.H},
+    //                     "y": ${xy.E}
+    //                 }
+    //             }
+    //         `);
 }
 
 function activate() {
     document.getElementById('block-test').style.display = "";
-    
-    
+    document.getElementById('connect').removeChild(btnConnect);
+    userID.disabled = true;
     const image = new Image(1260, 710);
     image.onload = drawImageActualSize;
     image.src = 'img/nocam/noCamera.jpg';
@@ -421,10 +542,4 @@ function PrintSerial(msg) {
 
 function mapValue(x, in_min, in_max, out_min, out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
-
-function sendImg() {
-    var imgString = results.toDataURL();
-    socket.emit('StreamID', { "socketID": socket.id, "img": imgString });
 }

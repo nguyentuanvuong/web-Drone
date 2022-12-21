@@ -132,8 +132,6 @@ async function trainModel(
     metrics: ["accuracy"]
   });
 
-
-
   const info = await model.fit(xs, ys, {
     epochs: epochs,
     batchSize: batchSize,

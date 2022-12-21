@@ -9,7 +9,7 @@ long frequency = 433E6;
 long spreadingFactor = 7;     // defaults 7, 6 - 12
 long signalBandwidth = 125E3; // defaults to 125E3, 7.8E3, 10.4E3, 15.6E3, 20.8E3, 31.25E3, 41.7E3, 62.5E3, 125E3, 250E3, and 500E3.
 long codingRateDenominator = 5;
-long txPower = 17; // defaults 17 2-20
+long txPower = 20; // defaults 17 2-20
 
 int csPin = 10;
 int resetPin = 9;
@@ -23,7 +23,7 @@ void setup()
 {
   for (int i = 14; i < 18; i++)
     pinMode(i, OUTPUT);
-  for (int i = 14; i < 18; i++)
+  for (int i = 14; i < 18; i++) 
   {
     digitalWrite(i, 1);
     delay(200);
@@ -122,22 +122,22 @@ void onReceive(int packetSize)
     return;
   if (recipient != localAddress && recipient != localAddress)
     return;
-//  Serial.println("Received from: 0x" + String(sender, HEX));
-//  Serial.println("Sent to: 0x" + String(recipient, HEX));
-//  Serial.println("Message ID: " + String(incomingMsgId));
-//  Serial.println("Message length: " + String(incomingLength));
-//  Serial.println("Message: " + message);
-//  Serial.println("RSSI: " + String(LoRa.packetRssi()));
-//  Serial.println("Snr: " + String(LoRa.packetSnr()));
-//  Serial.println();
+ Serial.println("Received from: 0x" + String(sender, HEX));
+ Serial.println("Sent to: 0x" + String(recipient, HEX));
+ Serial.println("Message ID: " + String(incomingMsgId));
+ Serial.println("Message length: " + String(incomingLength));
+ Serial.println("Message: " + message);
+ Serial.println("RSSI: " + String(LoRa.packetRssi()));
+ Serial.println("Snr: " + String(LoRa.packetSnr()));
+ Serial.println();
 
 
-  DynamicJsonDocument requires(500);
-  deserializeJson(requires, message);
-  String event = requires["event_name"];
-  if (event == "sensor-value") {
-        Serial.println(message);
-  }
+  // DynamicJsonDocument requires(500);
+  // deserializeJson(requires, message);
+  // String event = requires["event_name"];
+  // if (event == "sensor-value") {
+  //       Serial.println(message);
+  // }
   
 }
 
